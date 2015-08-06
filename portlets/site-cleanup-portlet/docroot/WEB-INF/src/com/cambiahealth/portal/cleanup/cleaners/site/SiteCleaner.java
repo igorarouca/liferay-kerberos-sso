@@ -1,10 +1,10 @@
-package com.cambiahealth.portal.cleanup.util;
+package com.cambiahealth.portal.cleanup.cleaners.site;
 
 import com.liferay.portal.model.Group;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-public interface SiteRemover extends Callable<List<Group>> {
+public interface SiteCleaner extends Callable<List<Group>> {
 
 	boolean hasSitesToRemove();
 

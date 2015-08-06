@@ -1,18 +1,6 @@
 package com.cambiahealth.portal.cleanup.portlet;
 
-import com.cambiahealth.portal.cleanup.DbCleanupConstants;
-import com.cambiahealth.portal.cleanup.util.SiteRemover;
-import com.cambiahealth.portal.cleanup.util.SiteRemoverFactoryUtil;
-import com.cambiahealth.portal.cleanup.util.impl.AbstractSiteRemover;
-
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.servlet.SessionErrors;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.util.PortalUtil;
-
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +13,15 @@ import javax.portlet.ProcessAction;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
+import com.cambiahealth.portal.cleanup.DbCleanupConstants;
+import com.cambiahealth.portal.cleanup.cleaners.SiteCleanerUtil;
+import com.cambiahealth.portal.cleanup.cleaners.site.SiteCleaner;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.util.PortalUtil;
+
 /**
  * Portlet implementation class SiteCleanupPortlet
  */
@@ -34,15 +31,15 @@ public class DbCleanupPortlet extends GenericPortlet {
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
 
-		AbstractSiteRemover siteRemover =
-			(AbstractSiteRemover)renderRequest.getAttribute("siteRemover");
+		SiteCleaner siteCleaner = 
+			(SiteCleaner)renderRequest.getAttribute("siteCleaner");
 
-		if (siteRemover == null) {
+		if (siteCleaner == null) {
 			include(viewTemplate, renderRequest, renderResponse);
 			return;
 		}
 
-		if (siteRemover.hasSitesToRemove()) {
+		if (siteCleaner.hasSitesToRemove()) {
 			include(resultTemplate, renderRequest, renderResponse);
 			return;
 		}
@@ -76,22 +73,22 @@ public class DbCleanupPortlet extends GenericPortlet {
 			siteNames.add(StringUtil.trim(name));
 		}
 
-		SiteRemover siteRemover = null;
+		SiteCleaner siteCleaner = null;
 
 		if (DbCleanupConstants.PARALLEL_EXECUTION_ENABLED) {
-			siteRemover = SiteRemoverFactoryUtil.getParallelSiteRemover(
+			siteCleaner = SiteCleanerUtil.getParallelSiteCleaner(
 				companyId, siteNames);
 
 			_log.info(">>> Site removal set to run in parallel");
 		}
 		else {
-			siteRemover = SiteRemoverFactoryUtil.getSequentialSiteRemover(
+			siteCleaner = SiteCleanerUtil.getSequentialSiteCleaner(
 				companyId, siteNames);
 
 			_log.info(">>> Site removal set to run sequentially");
 		}
 
-		actionRequest.setAttribute("siteRemover", siteRemover);
+		actionRequest.setAttribute("siteCleaner", siteCleaner);
 	}
 
 	protected void include(

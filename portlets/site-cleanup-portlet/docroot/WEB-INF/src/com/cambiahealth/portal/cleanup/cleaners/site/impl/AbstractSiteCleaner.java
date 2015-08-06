@@ -1,8 +1,14 @@
-package com.cambiahealth.portal.cleanup.util.impl;
+package com.cambiahealth.portal.cleanup.cleaners.site.impl;
 
-import com.cambiahealth.portal.cleanup.util.SiteRemover;
+import static com.cambiahealth.portal.cleanup.DbCleanupConstants.BULK_REINDEX_ENABLED;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import com.cambiahealth.portal.cleanup.cleaners.site.SiteCleaner;
 import com.cambiahealth.portal.cleanup.util.StagingAdvicesUtil;
-
 import com.liferay.portal.kernel.dao.orm.ORMException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -16,15 +22,7 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.Layout;
 import com.liferay.portal.service.GroupLocalServiceUtil;
-import com.liferay.portal.service.LayoutLocalServiceUtil;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static com.cambiahealth.portal.cleanup.DbCleanupConstants.BULK_REINDEX_ENABLED;
-public abstract class AbstractSiteRemover implements SiteRemover {
+public abstract class AbstractSiteCleaner implements SiteCleaner {
 
 	@Override
 	public List<Group> call() {
@@ -86,7 +84,7 @@ public abstract class AbstractSiteRemover implements SiteRemover {
 		return !_sitesToBeRemoved.isEmpty();
 	}
 
-	protected AbstractSiteRemover(long companyId, List<String> siteNames) {
+	protected AbstractSiteCleaner(long companyId, List<String> siteNames) {
 		if ((siteNames == null) || siteNames.isEmpty()) {
 			throw new IllegalArgumentException("Site list is empty!");
 		}
@@ -147,37 +145,6 @@ public abstract class AbstractSiteRemover implements SiteRemover {
 		}
 
 		return siteList.toString();
-	}
-
-	protected void deleteLayoutsFrom(final Group site) {
-		List<Layout> layouts = null;
-		try {
-			layouts = LayoutLocalServiceUtil.getLayouts(
-				site.getGroupId(), false);
-		}
-		catch (SystemException se) {
-			_log.error(
-				">>> Error fetching public layouts for site: " + site.getName(),
-				se);
-		}
-
-		if (layouts != null) {
-			for (Layout layout : layouts) {
-				try {
-					LayoutLocalServiceUtil.deleteLayout(layout, true, null);
-
-					if (_log.isInfoEnabled()) {
-						_log.info(">>> Deleted layout: " + asString(layout) +
-							" from " + site.getName());
-					}
-				}
-
-				catch(Exception e) {
-					_log.error(">>> Error deleting layout: " +
-						asString(layout) + " from " + site.getName(), e);
-				}
-			}
-		}
 	}
 
 	protected abstract List<Group> doCall();
@@ -244,6 +211,6 @@ public abstract class AbstractSiteRemover implements SiteRemover {
 
 	protected final List<Group> _sitesToBeRemoved;
 
-	private static Log _log = LogFactoryUtil.getLog(AbstractSiteRemover.class);
+	private static Log _log = LogFactoryUtil.getLog(AbstractSiteCleaner.class);
 
 }

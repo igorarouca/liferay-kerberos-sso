@@ -1,11 +1,11 @@
-package com.cambiahealth.portal.cleanup.util.impl;
+package com.cambiahealth.portal.cleanup.cleaners.site.impl;
 
 import com.liferay.portal.model.Group;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-class SequentialSiteRemover extends AbstractSiteRemover {
+class SequentialSiteCleaner extends AbstractSiteCleaner {
 
 	@Override
 	public boolean isRunning() {
@@ -42,7 +42,7 @@ class SequentialSiteRemover extends AbstractSiteRemover {
 		_currentState = State.TERMINATED;
 	}
 
-	SequentialSiteRemover(long companyId, List<String> siteNames) {
+	SequentialSiteCleaner(long companyId, List<String> siteNames) {
 		super(companyId, siteNames);
 
 		_currentState = State.CREATED;

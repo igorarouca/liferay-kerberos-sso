@@ -1,7 +1,6 @@
-package com.cambiahealth.portal.cleanup.util.impl;
+package com.cambiahealth.portal.cleanup.cleaners.site.impl;
 
-import com.cambiahealth.portal.cleanup.util.SiteRemover;
-
+import com.cambiahealth.portal.cleanup.cleaners.site.SiteCleaner;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Indexer;
@@ -21,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 import static com.cambiahealth.portal.cleanup.DbCleanupConstants.SITE_REMOVAL_TIMEOUT;
 import static com.cambiahealth.portal.cleanup.DbCleanupConstants.THREAD_POOL_AUTOSIZING_ENABLED;
 import static com.cambiahealth.portal.cleanup.DbCleanupConstants.THREAD_POOL_SIZE;
-class ParallelSiteRemover extends AbstractSiteRemover implements SiteRemover {
+class ParallelSiteCleaner extends AbstractSiteCleaner implements SiteCleaner {
 
 	@Override
 	public boolean isRunning() {
@@ -100,7 +99,7 @@ class ParallelSiteRemover extends AbstractSiteRemover implements SiteRemover {
 					"Reindexing-" + indexer.getClass().getSimpleName());
 
 				try {
-					ParallelSiteRemover.super.reindex(indexer);
+					ParallelSiteCleaner.super.reindex(indexer);
 				}
 				finally {
 					currentThread.setName(oldThreadName);
@@ -141,7 +140,7 @@ class ParallelSiteRemover extends AbstractSiteRemover implements SiteRemover {
 		_log.info(">>> Shutdown thread executor");
 	}
 
-	ParallelSiteRemover(long companyId, List<String> siteNames) {
+	ParallelSiteCleaner(long companyId, List<String> siteNames) {
 		super(companyId, siteNames);
 
 		if (THREAD_POOL_AUTOSIZING_ENABLED) {
@@ -160,7 +159,7 @@ class ParallelSiteRemover extends AbstractSiteRemover implements SiteRemover {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		ParallelSiteRemover.class);
+		ParallelSiteCleaner.class);
 
 	private List<Future<Group>> _removeTasks;
 	private final ExecutorService _threadExecutor;
