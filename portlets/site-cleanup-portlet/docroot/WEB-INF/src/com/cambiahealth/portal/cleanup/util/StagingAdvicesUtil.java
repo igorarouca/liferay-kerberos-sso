@@ -5,7 +5,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 
 import java.lang.reflect.Method;
-public class StagingAdvicesThreadLocalUtil {
+public class StagingAdvicesUtil {
 
 	public static boolean disableStagingAdvices() {
 		boolean isEnabled = true;
@@ -35,11 +35,11 @@ public class StagingAdvicesThreadLocalUtil {
 		}
 	}
 
-	private StagingAdvicesThreadLocalUtil() {
+	private StagingAdvicesUtil() {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		StagingAdvicesThreadLocalUtil.class);
+		StagingAdvicesUtil.class);
 
 	private static final Method _stagingAdvicesIsEnabled;
 

@@ -16,7 +16,7 @@ package com.cambiahealth.portal.cleanup.service.impl;
 
 import com.cambiahealth.portal.cleanup.service.base.CorruptedLayoutLocalServiceBaseImpl;
 import com.cambiahealth.portal.cleanup.util.DbUtils;
-import com.cambiahealth.portal.cleanup.util.StagingAdvicesThreadLocalUtil;
+import com.cambiahealth.portal.cleanup.util.StagingAdvicesUtil;
 
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -66,7 +66,7 @@ public class CorruptedLayoutLocalServiceImpl
 		 * https://gist.github.com/anonymous/130ba785fe02ad02cd86
 		 */
 		boolean originalValue =
-			StagingAdvicesThreadLocalUtil.disableStagingAdvices();
+			StagingAdvicesUtil.disableStagingAdvices();
 
 		List<Layout> layouts = null;
 		try {
@@ -82,7 +82,7 @@ public class CorruptedLayoutLocalServiceImpl
 					groupId, e);
 		}
 		finally {
-			StagingAdvicesThreadLocalUtil.resetStagingAdvices(originalValue);
+			StagingAdvicesUtil.resetStagingAdvices(originalValue);
 		}
 
 		for (Layout layout : layouts) {

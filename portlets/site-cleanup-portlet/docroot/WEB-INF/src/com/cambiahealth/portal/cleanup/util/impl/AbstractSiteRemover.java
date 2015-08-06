@@ -1,7 +1,7 @@
 package com.cambiahealth.portal.cleanup.util.impl;
 
 import com.cambiahealth.portal.cleanup.util.SiteRemover;
-import com.cambiahealth.portal.cleanup.util.StagingAdvicesThreadLocalUtil;
+import com.cambiahealth.portal.cleanup.util.StagingAdvicesUtil;
 
 import com.liferay.portal.kernel.dao.orm.ORMException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -211,7 +211,7 @@ public abstract class AbstractSiteRemover implements SiteRemover {
 		Group removedSite = null;
 
 		boolean stagingAdvicesEnabled =
-			StagingAdvicesThreadLocalUtil.disableStagingAdvices();
+			StagingAdvicesUtil.disableStagingAdvices();
 
 		try {
 			removedSite = GroupLocalServiceUtil.deleteGroup(site);
@@ -225,7 +225,7 @@ public abstract class AbstractSiteRemover implements SiteRemover {
 			_log.error(">>> Error removing site: " + asString(site), e);
 		}
 		finally {
-			StagingAdvicesThreadLocalUtil.resetStagingAdvices(
+			StagingAdvicesUtil.resetStagingAdvices(
 				stagingAdvicesEnabled);
 		}
 
