@@ -11,6 +11,6 @@
 
 <ol>
 	<c:forEach items="${removedSites}" var="site">
-		<li>Removed: <del><c:out value="${site}" /></del> </li>
+		<li>Removed: <del><c:out value="${site.name}" /></del> </li>
 	</c:forEach>
 </ol>
