@@ -28,7 +28,7 @@ import javax.portlet.RenderResponse;
 /**
  * Portlet implementation class SiteCleanupPortlet
  */
-public class SiteCleanupPortlet extends GenericPortlet {
+public class DbCleanupPortlet extends GenericPortlet {
 
 	public void doView(
 			RenderRequest renderRequest, RenderResponse renderResponse)
@@ -111,7 +111,7 @@ public class SiteCleanupPortlet extends GenericPortlet {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		SiteCleanupPortlet.class);
+		DbCleanupPortlet.class);
 
 	private static final String _LINE_SEPARATOR_REGEX = "[\\r\\n]+";
 
