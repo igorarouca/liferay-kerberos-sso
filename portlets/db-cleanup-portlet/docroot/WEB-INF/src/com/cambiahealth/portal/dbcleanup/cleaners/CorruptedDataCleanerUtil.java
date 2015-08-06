@@ -299,7 +299,8 @@ public final class CorruptedDataCleanerUtil {
 			GroupUserRelationLocalServiceUtil.deleteGroupUserRelations(groupId);
 
 			_log.info(
-				">>> Deleted group-user relationship for groupId: " + groupId);
+				">>> Deleted group-user relationship entries for groupId: " +
+					groupId);
 		}
 		catch (SystemException se) {
 			_log.error(
