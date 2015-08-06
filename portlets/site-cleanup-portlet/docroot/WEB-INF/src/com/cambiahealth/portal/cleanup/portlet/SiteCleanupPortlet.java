@@ -1,5 +1,10 @@
 package com.cambiahealth.portal.cleanup.portlet;
 
+import com.cambiahealth.portal.cleanup.DbCleanupConstants;
+import com.cambiahealth.portal.cleanup.util.SiteRemover;
+import com.cambiahealth.portal.cleanup.util.SiteRemoverFactoryUtil;
+import com.cambiahealth.portal.cleanup.util.impl.AbstractSiteRemover;
+
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -29,8 +34,8 @@ public class SiteCleanupPortlet extends GenericPortlet {
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
 
-		SiteRemover siteRemover =
-			(SiteRemover)renderRequest.getAttribute("siteRemover");
+		AbstractSiteRemover siteRemover =
+			(AbstractSiteRemover)renderRequest.getAttribute("siteRemover");
 
 		if (siteRemover == null) {
 			include(viewTemplate, renderRequest, renderResponse);
@@ -71,8 +76,22 @@ public class SiteCleanupPortlet extends GenericPortlet {
 			siteNames.add(StringUtil.trim(name));
 		}
 
-		actionRequest.setAttribute(
-			"siteRemover", new SiteRemover(companyId, siteNames));
+		SiteRemover siteRemover = null;
+
+		if (DbCleanupConstants.PARALLEL_EXECUTION_ENABLED) {
+			siteRemover = SiteRemoverFactoryUtil.getParallelSiteRemover(
+				companyId, siteNames);
+
+			_log.info(">>> Site removal set to run in parallel");
+		}
+		else {
+			siteRemover = SiteRemoverFactoryUtil.getSequentialSiteRemover(
+				companyId, siteNames);
+
+			_log.info(">>> Site removal set to run sequentially");
+		}
+
+		actionRequest.setAttribute("siteRemover", siteRemover);
 	}
 
 	protected void include(
