@@ -15,7 +15,7 @@
 package com.cambiahealth.portal.cleanup.service.impl;
 
 import com.cambiahealth.portal.cleanup.service.base.CorruptedLayoutLocalServiceBaseImpl;
-import com.cambiahealth.portal.cleanup.util.DbUtils;
+import com.cambiahealth.portal.cleanup.util.DbUtil;
 import com.cambiahealth.portal.cleanup.util.StagingAdvicesUtil;
 
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
@@ -164,8 +164,8 @@ public class CorruptedLayoutLocalServiceImpl
 			_log.error(">>> Error deleting layouts for groupId: ", sqle);
 		}
 		finally {
-			DbUtils.closeQuietly(connection);
-			DbUtils.closeQuietly(deleteStatement);
+			DbUtil.closeQuietly(connection);
+			DbUtil.closeQuietly(deleteStatement);
 		}
 	}
 

@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-public final class DbUtils {
+public final class DbUtil {
 
 	public static void close(Connection conn) throws SQLException {
 		if (conn != null) {
@@ -28,7 +28,7 @@ public final class DbUtils {
 
 	}
 
-	private DbUtils() {
+	private DbUtil() {
 	}
 
 	public static void close(ResultSet rs) throws SQLException {

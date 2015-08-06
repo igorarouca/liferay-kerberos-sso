@@ -15,7 +15,7 @@
 package com.cambiahealth.portal.cleanup.service.impl;
 
 import com.cambiahealth.portal.cleanup.service.base.GroupUserRelationLocalServiceBaseImpl;
-import com.cambiahealth.portal.cleanup.util.DbUtils;
+import com.cambiahealth.portal.cleanup.util.DbUtil;
 
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -78,7 +78,7 @@ public class GroupUserRelationLocalServiceImpl
 			_log.error(">>> Error deleting layouts for groupId: ", sqle);
 		}
 		finally {
-			DbUtils.closeQuietly(connection, countStatement, resultSet);
+			DbUtil.closeQuietly(connection, countStatement, resultSet);
 		}
 
 		return count;
