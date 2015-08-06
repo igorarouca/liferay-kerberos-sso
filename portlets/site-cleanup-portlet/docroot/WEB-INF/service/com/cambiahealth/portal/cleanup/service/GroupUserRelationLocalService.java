@@ -31,8 +31,8 @@ import com.liferay.portal.service.InvokableLocalService;
  *
  * @author Igor Arouca
  * @see GroupUserRelationLocalServiceUtil
- * @see com.cambiahealth.portal.cleanup.service.base.GroupUserRelationLocalServiceBaseImpl
- * @see com.cambiahealth.portal.cleanup.service.impl.GroupUserRelationLocalServiceImpl
+ * @see com.cambiahealth.portal.dbcleanup.service.base.GroupUserRelationLocalServiceBaseImpl
+ * @see com.cambiahealth.portal.dbcleanup.service.impl.GroupUserRelationLocalServiceImpl
  * @generated
  */
 @Transactional(isolation = Isolation.PORTAL, rollbackFor =  {
@@ -42,7 +42,7 @@ public interface GroupUserRelationLocalService extends BaseLocalService,
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this interface directly. Always use {@link GroupUserRelationLocalServiceUtil} to access the group user relation local service. Add custom service methods to {@link com.cambiahealth.portal.cleanup.service.impl.GroupUserRelationLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
+	 * Never modify or reference this interface directly. Always use {@link GroupUserRelationLocalServiceUtil} to access the group user relation local service. Add custom service methods to {@link com.cambiahealth.portal.dbcleanup.service.impl.GroupUserRelationLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
 
 	/**

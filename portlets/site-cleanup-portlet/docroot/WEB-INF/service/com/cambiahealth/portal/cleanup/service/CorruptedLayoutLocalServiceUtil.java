@@ -19,7 +19,7 @@ import com.liferay.portal.kernel.util.ReferenceRegistry;
 import com.liferay.portal.service.InvokableLocalService;
 
 /**
- * The utility for the corrupted layout local service. This utility wraps {@link com.cambiahealth.portal.cleanup.service.impl.CorruptedLayoutLocalServiceImpl} and is the primary access point for service operations in application layer code running on the local server.
+ * The utility for the corrupted layout local service. This utility wraps {@link com.cambiahealth.portal.dbcleanup.service.impl.CorruptedLayoutLocalServiceImpl} and is the primary access point for service operations in application layer code running on the local server.
  *
  * <p>
  * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
@@ -27,15 +27,15 @@ import com.liferay.portal.service.InvokableLocalService;
  *
  * @author Igor Arouca
  * @see CorruptedLayoutLocalService
- * @see com.cambiahealth.portal.cleanup.service.base.CorruptedLayoutLocalServiceBaseImpl
- * @see com.cambiahealth.portal.cleanup.service.impl.CorruptedLayoutLocalServiceImpl
+ * @see com.cambiahealth.portal.dbcleanup.service.base.CorruptedLayoutLocalServiceBaseImpl
+ * @see com.cambiahealth.portal.dbcleanup.service.impl.CorruptedLayoutLocalServiceImpl
  * @generated
  */
 public class CorruptedLayoutLocalServiceUtil {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify this class directly. Add custom service methods to {@link com.cambiahealth.portal.cleanup.service.impl.CorruptedLayoutLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
+	 * Never modify this class directly. Add custom service methods to {@link com.cambiahealth.portal.dbcleanup.service.impl.CorruptedLayoutLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
 
 	/**

@@ -12,36 +12,37 @@
  * details.
  */
 
-package com.cambiahealth.portal.cleanup.service;
+package com.cambiahealth.portal.dbcleanup.service;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.transaction.Isolation;
+import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.service.BaseLocalService;
 import com.liferay.portal.service.InvokableLocalService;
 
 /**
- * The interface for the corrupted layout local service.
+ * The interface for the group user relation local service.
  *
  * <p>
  * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
  * </p>
  *
  * @author Igor Arouca
- * @see CorruptedLayoutLocalServiceUtil
- * @see com.cambiahealth.portal.dbcleanup.service.base.CorruptedLayoutLocalServiceBaseImpl
- * @see com.cambiahealth.portal.dbcleanup.service.impl.CorruptedLayoutLocalServiceImpl
+ * @see GroupUserRelationLocalServiceUtil
+ * @see com.cambiahealth.portal.dbcleanup.service.base.GroupUserRelationLocalServiceBaseImpl
+ * @see com.cambiahealth.portal.dbcleanup.service.impl.GroupUserRelationLocalServiceImpl
  * @generated
  */
 @Transactional(isolation = Isolation.PORTAL, rollbackFor =  {
 	PortalException.class, SystemException.class})
-public interface CorruptedLayoutLocalService extends BaseLocalService,
+public interface GroupUserRelationLocalService extends BaseLocalService,
 	InvokableLocalService {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this interface directly. Always use {@link CorruptedLayoutLocalServiceUtil} to access the corrupted layout local service. Add custom service methods to {@link com.cambiahealth.portal.dbcleanup.service.impl.CorruptedLayoutLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
+	 * Never modify or reference this interface directly. Always use {@link GroupUserRelationLocalServiceUtil} to access the group user relation local service. Add custom service methods to {@link com.cambiahealth.portal.dbcleanup.service.impl.GroupUserRelationLocalServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
 
 	/**
@@ -62,5 +63,10 @@ public interface CorruptedLayoutLocalService extends BaseLocalService,
 		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
 		throws java.lang.Throwable;
 
-	public void deleteCorruptedLayouts(long groupId);
+	public void deleteGroupUserRelations(long groupId)
+		throws com.liferay.portal.kernel.exception.SystemException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getGroupUserRelationsCount(long groupId)
+		throws com.liferay.portal.kernel.exception.SystemException;
 }

@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.cambiahealth.portal.cleanup.service;
+package com.cambiahealth.portal.dbcleanup.service;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;

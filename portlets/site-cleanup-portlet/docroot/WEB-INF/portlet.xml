@@ -4,7 +4,7 @@
 	<portlet>
 		<portlet-name>site-cleanup</portlet-name>
 		<display-name>Site Cleanup</display-name>
-		<portlet-class>com.cambiahealth.portal.cleanup.portlet.SiteCleanupPortlet</portlet-class>
+		<portlet-class>com.cambiahealth.portal.dbcleanup.portlet.SiteCleanupPortlet</portlet-class>
 		<init-param>
 			<name>result-template</name>
 			<value>/html/site-cleanup/result.jsp</value>

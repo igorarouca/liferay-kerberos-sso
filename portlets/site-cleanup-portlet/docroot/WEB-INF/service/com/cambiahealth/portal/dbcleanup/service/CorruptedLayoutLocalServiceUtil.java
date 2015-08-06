@@ -12,30 +12,30 @@
  * details.
  */
 
-package com.cambiahealth.portal.cleanup.service;
+package com.cambiahealth.portal.dbcleanup.service;
 
 import com.liferay.portal.kernel.bean.PortletBeanLocatorUtil;
 import com.liferay.portal.kernel.util.ReferenceRegistry;
 import com.liferay.portal.service.InvokableLocalService;
 
 /**
- * The utility for the group user relation local service. This utility wraps {@link com.cambiahealth.portal.dbcleanup.service.impl.GroupUserRelationLocalServiceImpl} and is the primary access point for service operations in application layer code running on the local server.
+ * The utility for the corrupted layout local service. This utility wraps {@link com.cambiahealth.portal.dbcleanup.service.impl.CorruptedLayoutLocalServiceImpl} and is the primary access point for service operations in application layer code running on the local server.
  *
  * <p>
  * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
  * </p>
  *
  * @author Igor Arouca
- * @see GroupUserRelationLocalService
- * @see com.cambiahealth.portal.dbcleanup.service.base.GroupUserRelationLocalServiceBaseImpl
- * @see com.cambiahealth.portal.dbcleanup.service.impl.GroupUserRelationLocalServiceImpl
+ * @see CorruptedLayoutLocalService
+ * @see com.cambiahealth.portal.dbcleanup.service.base.CorruptedLayoutLocalServiceBaseImpl
+ * @see com.cambiahealth.portal.dbcleanup.service.impl.CorruptedLayoutLocalServiceImpl
  * @generated
  */
-public class GroupUserRelationLocalServiceUtil {
+public class CorruptedLayoutLocalServiceUtil {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify this class directly. Add custom service methods to {@link com.cambiahealth.portal.dbcleanup.service.impl.GroupUserRelationLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
+	 * Never modify this class directly. Add custom service methods to {@link com.cambiahealth.portal.dbcleanup.service.impl.CorruptedLayoutLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
 
 	/**
@@ -62,33 +62,27 @@ public class GroupUserRelationLocalServiceUtil {
 		return getService().invokeMethod(name, parameterTypes, arguments);
 	}
 
-	public static int getGroupUserRelationsCount(long groupId)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getService().getGroupUserRelationsCount(groupId);
-	}
-
-	public static void deleteGroupUserRelations(long groupId)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		getService().deleteGroupUserRelations(groupId);
+	public static void deleteCorruptedLayouts(long groupId) {
+		getService().deleteCorruptedLayouts(groupId);
 	}
 
 	public static void clearService() {
 		_service = null;
 	}
 
-	public static GroupUserRelationLocalService getService() {
+	public static CorruptedLayoutLocalService getService() {
 		if (_service == null) {
 			InvokableLocalService invokableLocalService = (InvokableLocalService)PortletBeanLocatorUtil.locate(ClpSerializer.getServletContextName(),
-					GroupUserRelationLocalService.class.getName());
+					CorruptedLayoutLocalService.class.getName());
 
-			if (invokableLocalService instanceof GroupUserRelationLocalService) {
-				_service = (GroupUserRelationLocalService)invokableLocalService;
+			if (invokableLocalService instanceof CorruptedLayoutLocalService) {
+				_service = (CorruptedLayoutLocalService)invokableLocalService;
 			}
 			else {
-				_service = new GroupUserRelationLocalServiceClp(invokableLocalService);
+				_service = new CorruptedLayoutLocalServiceClp(invokableLocalService);
 			}
 
-			ReferenceRegistry.registerReference(GroupUserRelationLocalServiceUtil.class,
+			ReferenceRegistry.registerReference(CorruptedLayoutLocalServiceUtil.class,
 				"_service");
 		}
 
@@ -98,8 +92,8 @@ public class GroupUserRelationLocalServiceUtil {
 	/**
 	 * @deprecated
 	 */
-	public void setService(GroupUserRelationLocalService service) {
+	public void setService(CorruptedLayoutLocalService service) {
 	}
 
-	private static GroupUserRelationLocalService _service;
+	private static CorruptedLayoutLocalService _service;
 }

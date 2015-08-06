@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.cambiahealth.portal.cleanup.service;
+package com.cambiahealth.portal.dbcleanup.service;
 
 import com.liferay.portal.kernel.bean.PortletBeanLocatorUtil;
 import com.liferay.portal.kernel.util.ReferenceRegistry;
@@ -62,14 +62,14 @@ public class GroupUserRelationLocalServiceUtil {
 		return getService().invokeMethod(name, parameterTypes, arguments);
 	}
 
-	public static int getGroupUserRelationsCount(long groupId)
-		throws com.liferay.portal.kernel.exception.SystemException {
-		return getService().getGroupUserRelationsCount(groupId);
-	}
-
 	public static void deleteGroupUserRelations(long groupId)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		getService().deleteGroupUserRelations(groupId);
+	}
+
+	public static int getGroupUserRelationsCount(long groupId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().getGroupUserRelationsCount(groupId);
 	}
 
 	public static void clearService() {
