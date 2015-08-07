@@ -3,7 +3,7 @@ package com.cambiahealth.portal.dbcleanup.cleaners.site.impl;
 import com.cambiahealth.portal.dbcleanup.DbCleanupConstants;
 import com.cambiahealth.portal.dbcleanup.cleaners.CorruptedDataCleanerUtil;
 import com.cambiahealth.portal.dbcleanup.cleaners.site.SiteCleaner;
-import com.cambiahealth.portal.dbcleanup.util.StagingAdvicesUtil;
+import com.cambiahealth.portal.dbcleanup.service.CorruptedLayoutLocalServiceUtil;
 
 import com.liferay.portal.kernel.dao.orm.ORMException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.Layout;
 import com.liferay.portal.service.GroupLocalServiceUtil;
+import com.liferay.portal.service.LayoutLocalServiceUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.BULK_REINDEX_ENABLED;
+import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.REGENCE_PRODUCER_OR;
 public abstract class AbstractSiteCleaner implements SiteCleaner {
 
 	@Override
@@ -71,7 +73,7 @@ public abstract class AbstractSiteCleaner implements SiteCleaner {
 		long duration = TimeUnit.MILLISECONDS.toMinutes(endTime - startTime);
 
 		if (_log.isInfoEnabled()) {
-			_log.info(">>> Removed " + removedSites.size() + " sites: " +
+			_log.info(">>> Removed " + removedSites.size() + " site(s): " +
 				asString(removedSites) + " in " + duration + " min");
 
 			if (hasSitesToRemove()) {
@@ -220,8 +222,14 @@ public abstract class AbstractSiteCleaner implements SiteCleaner {
 	protected Group remove(final Group site) {
 		Group removedSite = null;
 
-		boolean stagingAdvicesEnabled =
-			StagingAdvicesUtil.disableStagingAdvices();
+		/* Handles data issue with regence_producer_or site by first
+		 * deleting all public pages before deleting the site:
+		 *
+		 * https://gist.github.com/anonymous/8fc339193bd5b982406b
+		 */
+		if (site.getName().equals(REGENCE_PRODUCER_OR)) {
+			removePublicLayoutsFrom(site);
+		}
 
 		try {
 			removedSite = GroupLocalServiceUtil.deleteGroup(site);
@@ -234,11 +242,41 @@ public abstract class AbstractSiteCleaner implements SiteCleaner {
 		catch (PortalException | SystemException e) {
 			_log.error(">>> Error removing site: " + asString(site), e);
 		}
-		finally {
-			StagingAdvicesUtil.resetStagingAdvices(stagingAdvicesEnabled);
-		}
 
 		return removedSite;
+	}
+
+	protected void removePublicLayoutsFrom(final Group site) {
+		List<Layout> layouts = null;
+		try {
+			layouts = LayoutLocalServiceUtil.getLayouts(
+				site.getGroupId(), false);
+		}
+		catch (SystemException se) {
+			_log.error(
+				">>> Error retrieving public layouts for: " +
+					site.getName(), se);
+		}
+
+		if (layouts == null | layouts.isEmpty()) {
+			return;
+		}
+
+		for (Layout layout : layouts) {
+			try {
+				CorruptedLayoutLocalServiceUtil.deleteCorruptedLayout(layout);
+
+				if (_log.isInfoEnabled()) {
+					_log.info(">>> Deleted layout: " + asString(layout) +
+						" from regence_producer_or");
+				}
+			}
+
+			catch(Exception e) {
+				_log.error(">>> Error deleting layout: " +
+					asString(layout) + " from regence_producer_or", e);
+			}
+		}
 	}
 
 	protected abstract void shutdown();
