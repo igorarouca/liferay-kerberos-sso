@@ -12,25 +12,6 @@ public final class DbUtil {
 		}
 	}
 
-	public static void closeQuietly(
-		Connection conn, Statement stmt, ResultSet rs) {
-
-		try {
-			closeQuietly(rs);
-		}
-		finally {
-			try {
-				closeQuietly(stmt);
-			} finally {
-				closeQuietly(conn);
-			}
-		}
-
-	}
-
-	private DbUtil() {
-	}
-
 	public static void close(ResultSet rs) throws SQLException {
 		if (rs != null) {
 			rs.close();
@@ -51,6 +32,22 @@ public final class DbUtil {
 		}
 	}
 
+	public static void closeQuietly(
+		Connection conn, Statement stmt, ResultSet rs) {
+
+		try {
+			closeQuietly(rs);
+		}
+		finally {
+			try {
+				closeQuietly(stmt);
+			} finally {
+				closeQuietly(conn);
+			}
+		}
+
+	}
+
 	public static void closeQuietly(ResultSet rs) {
 		try {
 			close(rs);
@@ -65,6 +62,9 @@ public final class DbUtil {
 		}
 		catch (SQLException ignored) { // NOPMD
 		}
+	}
+
+	private DbUtil() {
 	}
 
 }
