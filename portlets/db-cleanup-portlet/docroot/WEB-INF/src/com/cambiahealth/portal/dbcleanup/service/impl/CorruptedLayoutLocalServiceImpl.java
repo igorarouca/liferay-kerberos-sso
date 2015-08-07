@@ -19,10 +19,12 @@ import com.cambiahealth.portal.dbcleanup.util.DbUtil;
 import com.cambiahealth.portal.dbcleanup.util.StagingAdvicesUtil;
 
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.InfrastructureUtil;
+import com.liferay.portal.model.Group;
 import com.liferay.portal.model.Layout;
 import com.liferay.portal.model.PortletConstants;
 import com.liferay.portal.model.ResourcePermission;
@@ -55,6 +57,25 @@ import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.GROUP_ID_QUER
 public class CorruptedLayoutLocalServiceImpl
 	extends CorruptedLayoutLocalServiceBaseImpl {
 
+	public void deleteCorruptedLayout(Layout layout) {
+		try {
+			layoutLocalService.deleteLayout(layout);
+		}
+		catch (SystemException e) {
+		}
+
+		deleteCorruptedLayoutReferences(layout);
+	}
+
+	public void deleteCorruptedLayoutReferences(Layout layout) {
+		deletePortletPreferences(layout);
+		deleteJournalArticleReferences(layout);
+		deleteJournalContentSearches(layout);
+		deleteExpandoValues(layout);
+		deleteScopeGroup(layout);
+		deleteResourcePermissions(layout);
+	}
+
 	@SuppressWarnings("unchecked")
 	public void deleteCorruptedLayouts(long groupId) {
 		DynamicQuery query = layoutLocalService.dynamicQuery();
@@ -85,9 +106,7 @@ public class CorruptedLayoutLocalServiceImpl
 		}
 
 		for (Layout layout : layouts) {
-			deletePortletPreferences(layout);
-			deleteExpandoValues(layout);
-			deleteResourcePermissions(layout);
+			deleteCorruptedLayoutReferences(layout);
 		}
 
 		doDeleteCorruptedLayouts(groupId);
@@ -101,6 +120,31 @@ public class CorruptedLayoutLocalServiceImpl
 		catch (SystemException se) {
 			_log.error(
 				">>> Error deleting expando values for layout: " +
+					layout.getPlid(), se);
+		}
+	}
+
+	protected void deleteJournalArticleReferences(Layout layout) {
+		try {
+			journalArticleLocalService.deleteLayoutArticleReferences(
+				layout.getGroupId(), layout.getUuid());
+		}
+		catch (SystemException se) {
+			_log.error(
+				">>> Error deleting journal article references for layout: " +
+					layout.getPlid(), se);
+		}
+	}
+
+	protected void deleteJournalContentSearches(Layout layout) {
+		try {
+			journalContentSearchLocalService.deleteLayoutContentSearches(
+				layout.getGroupId(), layout.isPrivateLayout(),
+				layout.getLayoutId());
+		}
+		catch (SystemException se) {
+			_log.error(
+				">>> Error deleting journal content searches for layout: " +
 					layout.getPlid(), se);
 		}
 	}
@@ -135,6 +179,21 @@ public class CorruptedLayoutLocalServiceImpl
 		catch (SystemException e) {
 			_log.error(
 				">>> Error deleting resource permissions for layout: " +
+					layout.getPlid(), e);
+		}
+	}
+
+	protected void deleteScopeGroup(Layout layout) {
+		try {
+			Group scopeGroup = layout.getScopeGroup();
+
+			if (scopeGroup != null) {
+				groupLocalService.deleteGroup(scopeGroup.getGroupId());
+			}
+		}
+		catch (PortalException | SystemException e) {
+			_log.error(
+				">>> Error deleting scope group for layout: " +
 					layout.getPlid(), e);
 		}
 	}

@@ -10,14 +10,10 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.model.Group;
 import com.liferay.portal.model.GroupConstants;
-import com.liferay.portal.model.Layout;
 import com.liferay.portal.model.LayoutSetBranch;
 import com.liferay.portal.model.PortletItem;
 import com.liferay.portal.model.ResourceTypePermission;
-import com.liferay.portal.service.GroupLocalServiceUtil;
-import com.liferay.portal.service.LayoutLocalServiceUtil;
 import com.liferay.portal.service.LayoutSetBranchLocalServiceUtil;
 import com.liferay.portal.service.PortletItemLocalServiceUtil;
 import com.liferay.portal.service.ResourceTypePermissionLocalServiceUtil;
@@ -40,18 +36,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.CLASS_NAME_ID_QUERY_PROPERTY;
 import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.GROUP_ID_QUERY_PROPERTY;
-import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.LAYOUT_CLASS_NAME_ID;
 public final class CorruptedDataCleanerUtil {
 
 	public static void clean(long[] groupIds) {
 		final Thread currentThread = Thread.currentThread();
 		final String oldThreadName = currentThread.getName();
-		currentThread.setName("CorruptedDataCleanup");
+		currentThread.setName("CorruptedData-Clean");
 
 		_log.info(
-			">>> Started database cleanup of groupIds: " +
+			">>> Started cleanup of orphan records for groupIds: " +
 				Arrays.toString(groupIds));
 
 		long startTime = System.currentTimeMillis();
@@ -66,12 +60,11 @@ public final class CorruptedDataCleanerUtil {
 		long duration = System.currentTimeMillis() - startTime;
 
 		_log.info(
-			">>> Finshed DB cleanup action in " +
-				TimeUnit.MILLISECONDS.toSeconds(duration) + " seconds");
+			">>> Finshed cleanup of orphan records in " +
+				TimeUnit.MILLISECONDS.toMinutes(duration) + " minutes");
 	}
 
 	private static void doClean(long[] groupIds) {
-		removeCorruptedLayoutScopeGroups();
 		removeInvalidResourceTypePermissions();
 
 		for (long groupId : groupIds) {
@@ -177,46 +170,6 @@ public final class CorruptedDataCleanerUtil {
 			_log.error(
 				">>> Error deleting asset vocabularies for groupId: " + groupId,
 				e);
-		}
-	}
-
-	private static void removeCorruptedLayoutScopeGroup(Group group) {
-		try {
-			GroupLocalServiceUtil.deleteGroup(group);
-
-			_log.info(
-				">>> Deleted layout group with ID: " + group.getGroupId());
-		}
-		catch (PortalException | SystemException e) {
-			_log.error(
-				">>> Error deleting layout group with ID: " +
-					group.getGroupId(), e);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private static void removeCorruptedLayoutScopeGroups() {
-		DynamicQuery query = GroupLocalServiceUtil.dynamicQuery();
-		query.add(CLASS_NAME_ID_QUERY_PROPERTY.eq(LAYOUT_CLASS_NAME_ID));
-
-		try {
-			List<Group> groups = GroupLocalServiceUtil.dynamicQuery(query);
-
-			if (groups == null | groups.isEmpty()) {
-				return;
-			}
-
-			for (Group group : groups) {
-				Layout layout = LayoutLocalServiceUtil.fetchLayout(
-					group.getClassPK());
-
-				if (layout == null) {
-					removeCorruptedLayoutScopeGroup(group);
-				}
-			}
-		}
-		catch (SystemException se) {
-			_log.error(">>> Error deleting corrupted layout group", se);
 		}
 	}
 
@@ -477,6 +430,11 @@ public final class CorruptedDataCleanerUtil {
 		try {
 			ResourceTypePermissionLocalServiceUtil
 				.deleteResourceTypePermission(resourceTypePermission);
+
+			_log.info(
+				">>> Deleted resource type permission: " +
+					resourceTypePermission.getPrimaryKey() + " for groupId: " +
+						resourceTypePermission.getGroupId());
 		}
 		catch (SystemException se) {
 			_log.error(

@@ -58,6 +58,15 @@ public class CorruptedLayoutLocalServiceWrapper
 			arguments);
 	}
 
+	public void deleteCorruptedLayout(com.liferay.portal.model.Layout layout) {
+		_corruptedLayoutLocalService.deleteCorruptedLayout(layout);
+	}
+
+	public void deleteCorruptedLayoutReferences(
+		com.liferay.portal.model.Layout layout) {
+		_corruptedLayoutLocalService.deleteCorruptedLayoutReferences(layout);
+	}
+
 	public void deleteCorruptedLayouts(long groupId) {
 		_corruptedLayoutLocalService.deleteCorruptedLayouts(groupId);
 	}

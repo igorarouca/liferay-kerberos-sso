@@ -62,5 +62,10 @@ public interface CorruptedLayoutLocalService extends BaseLocalService,
 		java.lang.String[] parameterTypes, java.lang.Object[] arguments)
 		throws java.lang.Throwable;
 
+	public void deleteCorruptedLayout(com.liferay.portal.model.Layout layout);
+
+	public void deleteCorruptedLayoutReferences(
+		com.liferay.portal.model.Layout layout);
+
 	public void deleteCorruptedLayouts(long groupId);
 }

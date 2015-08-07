@@ -62,6 +62,16 @@ public class CorruptedLayoutLocalServiceUtil {
 		return getService().invokeMethod(name, parameterTypes, arguments);
 	}
 
+	public static void deleteCorruptedLayout(
+		com.liferay.portal.model.Layout layout) {
+		getService().deleteCorruptedLayout(layout);
+	}
+
+	public static void deleteCorruptedLayoutReferences(
+		com.liferay.portal.model.Layout layout) {
+		getService().deleteCorruptedLayoutReferences(layout);
+	}
+
 	public static void deleteCorruptedLayouts(long groupId) {
 		getService().deleteCorruptedLayouts(groupId);
 	}

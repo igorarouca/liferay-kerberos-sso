@@ -13,5 +13,7 @@
 		<reference package-path="com.liferay.portal" entity="ResourcePermission" />
 
 		<reference package-path="com.liferay.portlet.expando" entity="ExpandoValue" />
+		<reference package-path="com.liferay.portlet.journal" entity="JournalContentSearch" />
+		<reference package-path="com.liferay.portlet.journal" entity="JournalArticle" />
 	</entity>
 </service-builder>

@@ -33,9 +33,17 @@ public class CorruptedLayoutLocalServiceClp
 
 		_methodParameterTypes1 = new String[] { "java.lang.String" };
 
-		_methodName3 = "deleteCorruptedLayouts";
+		_methodName3 = "deleteCorruptedLayout";
 
-		_methodParameterTypes3 = new String[] { "long" };
+		_methodParameterTypes3 = new String[] { "com.liferay.portal.model.Layout" };
+
+		_methodName4 = "deleteCorruptedLayoutReferences";
+
+		_methodParameterTypes4 = new String[] { "com.liferay.portal.model.Layout" };
+
+		_methodName5 = "deleteCorruptedLayouts";
+
+		_methodParameterTypes5 = new String[] { "long" };
 	}
 
 	public java.lang.String getBeanIdentifier() {
@@ -85,10 +93,49 @@ public class CorruptedLayoutLocalServiceClp
 		throw new UnsupportedOperationException();
 	}
 
-	public void deleteCorruptedLayouts(long groupId) {
+	public void deleteCorruptedLayout(com.liferay.portal.model.Layout layout) {
 		try {
 			_invokableLocalService.invokeMethod(_methodName3,
-				_methodParameterTypes3, new Object[] { groupId });
+				_methodParameterTypes3,
+				new Object[] { ClpSerializer.translateInput(layout) });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+	}
+
+	public void deleteCorruptedLayoutReferences(
+		com.liferay.portal.model.Layout layout) {
+		try {
+			_invokableLocalService.invokeMethod(_methodName4,
+				_methodParameterTypes4,
+				new Object[] { ClpSerializer.translateInput(layout) });
+		}
+		catch (Throwable t) {
+			t = ClpSerializer.translateThrowable(t);
+
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException)t;
+			}
+			else {
+				throw new RuntimeException(t.getClass().getName() +
+					" is not a valid exception");
+			}
+		}
+	}
+
+	public void deleteCorruptedLayouts(long groupId) {
+		try {
+			_invokableLocalService.invokeMethod(_methodName5,
+				_methodParameterTypes5, new Object[] { groupId });
 		}
 		catch (Throwable t) {
 			t = ClpSerializer.translateThrowable(t);
@@ -110,4 +157,8 @@ public class CorruptedLayoutLocalServiceClp
 	private String[] _methodParameterTypes1;
 	private String _methodName3;
 	private String[] _methodParameterTypes3;
+	private String _methodName4;
+	private String[] _methodParameterTypes4;
+	private String _methodName5;
+	private String[] _methodParameterTypes5;
 }

@@ -23,43 +23,65 @@ import java.util.Arrays;
  */
 public class CorruptedLayoutLocalServiceClpInvoker {
 	public CorruptedLayoutLocalServiceClpInvoker() {
-		_methodName50 = "getBeanIdentifier";
+		_methodName60 = "getBeanIdentifier";
 
-		_methodParameterTypes50 = new String[] {  };
+		_methodParameterTypes60 = new String[] {  };
 
-		_methodName51 = "setBeanIdentifier";
+		_methodName61 = "setBeanIdentifier";
 
-		_methodParameterTypes51 = new String[] { "java.lang.String" };
+		_methodParameterTypes61 = new String[] { "java.lang.String" };
 
-		_methodName54 = "deleteCorruptedLayouts";
+		_methodName64 = "deleteCorruptedLayout";
 
-		_methodParameterTypes54 = new String[] { "long" };
+		_methodParameterTypes64 = new String[] { "com.liferay.portal.model.Layout" };
+
+		_methodName65 = "deleteCorruptedLayoutReferences";
+
+		_methodParameterTypes65 = new String[] { "com.liferay.portal.model.Layout" };
+
+		_methodName66 = "deleteCorruptedLayouts";
+
+		_methodParameterTypes66 = new String[] { "long" };
 	}
 
 	public Object invokeMethod(String name, String[] parameterTypes,
 		Object[] arguments) throws Throwable {
-		if (_methodName50.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes50, parameterTypes)) {
+		if (_methodName60.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes60, parameterTypes)) {
 			return CorruptedLayoutLocalServiceUtil.getBeanIdentifier();
 		}
 
-		if (_methodName51.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes51, parameterTypes)) {
+		if (_methodName61.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes61, parameterTypes)) {
 			CorruptedLayoutLocalServiceUtil.setBeanIdentifier((java.lang.String)arguments[0]);
 		}
 
-		if (_methodName54.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes54, parameterTypes)) {
+		if (_methodName64.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes64, parameterTypes)) {
+			CorruptedLayoutLocalServiceUtil.deleteCorruptedLayout((com.liferay.portal.model.Layout)arguments[0]);
+		}
+
+		if (_methodName65.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes65, parameterTypes)) {
+			CorruptedLayoutLocalServiceUtil.deleteCorruptedLayoutReferences((com.liferay.portal.model.Layout)arguments[0]);
+		}
+
+		if (_methodName66.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes66, parameterTypes)) {
 			CorruptedLayoutLocalServiceUtil.deleteCorruptedLayouts(((Long)arguments[0]).longValue());
 		}
 
 		throw new UnsupportedOperationException();
 	}
 
-	private String _methodName50;
-	private String[] _methodParameterTypes50;
-	private String _methodName51;
-	private String[] _methodParameterTypes51;
-	private String _methodName54;
-	private String[] _methodParameterTypes54;
+	private String _methodName60;
+	private String[] _methodParameterTypes60;
+	private String _methodName61;
+	private String[] _methodParameterTypes61;
+	private String _methodName64;
+	private String[] _methodParameterTypes64;
+	private String _methodName65;
+	private String[] _methodParameterTypes65;
+	private String _methodName66;
+	private String[] _methodParameterTypes66;
 }
