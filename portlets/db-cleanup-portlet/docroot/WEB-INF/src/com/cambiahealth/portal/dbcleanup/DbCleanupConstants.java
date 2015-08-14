@@ -89,7 +89,7 @@ public final class DbCleanupConstants {
 			"db.cleanup.parallel.execution.enabled";
 
 		private static final String _DB_CLEANUP_PATCH_CAMBIA_129_INSTALLED =
-			"db.cleanup.site.patch.cambia.129.installed";
+			"db.cleanup.patch.cambia.129.installed";
 
 		private static final String _DB_CLEANUP_SITE_REMOVAL_TIMEOUT =
 			"db.cleanup.site.removal.timeout";
