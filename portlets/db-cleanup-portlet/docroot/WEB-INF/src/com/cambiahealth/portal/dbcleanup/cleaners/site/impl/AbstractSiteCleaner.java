@@ -1,10 +1,19 @@
 package com.cambiahealth.portal.dbcleanup.cleaners.site.impl;
 
+import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.BULK_REINDEX_ENABLED;
+import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.PATCH_CAMBIA_129_INSTALLED;
+import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.REGENCE_PRODUCER_OR;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import com.cambiahealth.portal.dbcleanup.DbCleanupConstants;
 import com.cambiahealth.portal.dbcleanup.cleaners.CorruptedDataCleanerUtil;
 import com.cambiahealth.portal.dbcleanup.cleaners.site.SiteCleaner;
 import com.cambiahealth.portal.dbcleanup.service.CorruptedLayoutLocalServiceUtil;
-
 import com.liferay.portal.kernel.dao.orm.ORMException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -20,15 +29,6 @@ import com.liferay.portal.model.Group;
 import com.liferay.portal.model.Layout;
 import com.liferay.portal.service.GroupLocalServiceUtil;
 import com.liferay.portal.service.LayoutLocalServiceUtil;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.BULK_REINDEX_ENABLED;
-import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.REGENCE_PRODUCER_OR;
 public abstract class AbstractSiteCleaner implements SiteCleaner {
 
 	@Override
@@ -175,21 +175,27 @@ public abstract class AbstractSiteCleaner implements SiteCleaner {
 			">>> 'db.cleanup.dangling.group.ids' = " +
 				Arrays.toString(danglingGroupIds));
 
-		// Combine dangling groupIds with groupIds from removed sites
-		int middleIndex = danglingGroupIds.length;
-		long[] combinedGroupIds = new long[middleIndex + removedSites.size()];
+		long[] groupIds;
+		if (PATCH_CAMBIA_129_INSTALLED) {
+			groupIds = danglingGroupIds;
+		}
+		else {
+			// Combine dangling groupIds with groupIds from removed sites
+			int middleIndex = danglingGroupIds.length;
+			groupIds = new long[middleIndex + removedSites.size()];
 
-		for (int i = 0; i < middleIndex; ++i) {
-			combinedGroupIds[i] = danglingGroupIds[i];
+			for (int i = 0; i < middleIndex; ++i) {
+				groupIds[i] = danglingGroupIds[i];
+			}
+
+			int j = middleIndex;
+			for (Group removedSite : removedSites) {
+				groupIds[j] = removedSite.getGroupId();
+				++j;
+			}
 		}
 
-		int j = middleIndex;
-		for (Group removedSite : removedSites) {
-			combinedGroupIds[j] = removedSite.getGroupId();
-			++j;
-		}
-
-		CorruptedDataCleanerUtil.clean(combinedGroupIds);
+		CorruptedDataCleanerUtil.clean(groupIds);
 	}
 
 	protected abstract List<Group> doCall();

@@ -33,6 +33,11 @@ public final class DbCleanupConstants {
 			PropsUtil.get(Keys._DB_CLEANUP_PARALLEL_EXECUTION_ENABLED),
 			Defaults._DB_CLEANUP_PARALLEL_EXECUTION_ENABLED);
 
+	public static final boolean PATCH_CAMBIA_129_INSTALLED =
+		GetterUtil.getBoolean(
+			PropsUtil.get(Keys._DB_CLEANUP_PATCH_CAMBIA_129_INSTALLED),
+			Defaults._DB_CLEANUP_PATCH_CAMBIA_129_INSTALLED);
+
 	public static final String REGENCE_PRODUCER_OR = "regence_producer_or";
 
 	public static final long SITE_REMOVAL_TIMEOUT =
@@ -59,6 +64,9 @@ public final class DbCleanupConstants {
 		private static final boolean _DB_CLEANUP_PARALLEL_EXECUTION_ENABLED =
 			false;
 
+		private static final boolean _DB_CLEANUP_PATCH_CAMBIA_129_INSTALLED =
+			true;
+
 		// Time unit is 'minutes'
 		private static final long _DB_CLEANUP_SITE_REMOVAL_TIMEOUT = 45;
 
@@ -79,6 +87,9 @@ public final class DbCleanupConstants {
 
 		private static final String _DB_CLEANUP_PARALLEL_EXECUTION_ENABLED =
 			"db.cleanup.parallel.execution.enabled";
+
+		private static final String _DB_CLEANUP_PATCH_CAMBIA_129_INSTALLED =
+			"db.cleanup.site.patch.cambia.129.installed";
 
 		private static final String _DB_CLEANUP_SITE_REMOVAL_TIMEOUT =
 			"db.cleanup.site.removal.timeout";
