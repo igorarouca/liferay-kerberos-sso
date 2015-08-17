@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.model.GroupConstants;
 import com.liferay.portal.model.LayoutSetBranch;
 import com.liferay.portal.model.PortletItem;
@@ -40,6 +41,10 @@ import com.liferay.portlet.social.model.SocialActivity;
 import com.liferay.portlet.social.service.SocialActivityLocalServiceUtil;
 public final class CorruptedDataCleanerUtil {
 
+	public static void clean() {
+		clean(getDanglingGroupIds());
+	}
+
 	public static void clean(long[] groupIds) {
 		final Thread currentThread = Thread.currentThread();
 		final String oldThreadName = currentThread.getName();
@@ -63,6 +68,26 @@ public final class CorruptedDataCleanerUtil {
 		_log.info(
 			">>> Finshed cleanup of orphan records in " +
 				TimeUnit.MILLISECONDS.toMinutes(duration) + " minutes");
+	}
+
+	public static long[] getDanglingGroupIds() {
+		String groupIdCommaSeparatedList =
+			DbCleanupConstants.DANGLING_GROUP_IDS;
+
+		if (groupIdCommaSeparatedList.isEmpty()) {
+			_log.warn(">>> Property 'db.cleanup.dangling.group.ids' is empty");
+
+			return new long[0];
+		}
+
+		long[] danglingGroupIds = StringUtil.split(
+			groupIdCommaSeparatedList, 0l);
+
+		_log.info(
+			">>> 'db.cleanup.dangling.group.ids' = " + 
+				Arrays.toString(danglingGroupIds));
+
+		return danglingGroupIds;
 	}
 
 	private static void doClean(long[] groupIds) {

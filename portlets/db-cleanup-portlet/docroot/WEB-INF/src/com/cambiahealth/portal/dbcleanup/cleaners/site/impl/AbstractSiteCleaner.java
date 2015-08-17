@@ -5,12 +5,10 @@ import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.PATCH_CAMBIA_
 import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.REGENCE_PRODUCER_OR;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import com.cambiahealth.portal.dbcleanup.DbCleanupConstants;
 import com.cambiahealth.portal.dbcleanup.cleaners.CorruptedDataCleanerUtil;
 import com.cambiahealth.portal.dbcleanup.cleaners.site.SiteCleaner;
 import com.cambiahealth.portal.dbcleanup.service.CorruptedLayoutLocalServiceUtil;
@@ -24,7 +22,6 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchEngineUtil;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.Layout;
 import com.liferay.portal.service.GroupLocalServiceUtil;
@@ -157,30 +154,11 @@ public abstract class AbstractSiteCleaner implements SiteCleaner {
 	}
 
 	protected void cleanOrphanData(List<Group> removedSites) {
-		String groupIdCommaSeparatedList =
-			DbCleanupConstants.DANGLING_GROUP_IDS;
+		long[] groupIds = CorruptedDataCleanerUtil.getDanglingGroupIds();
 
-		if (groupIdCommaSeparatedList.isEmpty()) {
-			_log.warn(">>> Property 'db.cleanup.dangling.group.ids' is empty");
-
-			if (removedSites.isEmpty()) {
-				return;
-			}
-		}
-
-		long[] danglingGroupIds = StringUtil.split(
-			groupIdCommaSeparatedList, 0l);
-
-		_log.info(
-			">>> 'db.cleanup.dangling.group.ids' = " +
-				Arrays.toString(danglingGroupIds));
-
-		long[] groupIds;
-		if (PATCH_CAMBIA_129_INSTALLED) {
-			groupIds = danglingGroupIds;
-		}
-		else {
+		if (!PATCH_CAMBIA_129_INSTALLED) {
 			// Combine dangling groupIds with groupIds from removed sites
+			long[] danglingGroupIds = groupIds;
 			int middleIndex = danglingGroupIds.length;
 			groupIds = new long[middleIndex + removedSites.size()];
 

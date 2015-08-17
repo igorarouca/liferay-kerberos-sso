@@ -1,17 +1,6 @@
 package com.cambiahealth.portal.dbcleanup.portlet;
 
-import com.cambiahealth.portal.dbcleanup.DbCleanupConstants;
-import com.cambiahealth.portal.dbcleanup.cleaners.SiteCleanerUtil;
-import com.cambiahealth.portal.dbcleanup.cleaners.site.SiteCleaner;
-
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.servlet.SessionErrors;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.util.PortalUtil;
-
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +12,16 @@ import javax.portlet.PortletRequestDispatcher;
 import javax.portlet.ProcessAction;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+
+import com.cambiahealth.portal.dbcleanup.DbCleanupConstants;
+import com.cambiahealth.portal.dbcleanup.cleaners.CorruptedDataCleanerUtil;
+import com.cambiahealth.portal.dbcleanup.cleaners.SiteCleanerUtil;
+import com.cambiahealth.portal.dbcleanup.cleaners.site.SiteCleaner;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.util.PortalUtil;
 
 /**
  * Portlet implementation class SiteCleanupPortlet
@@ -56,7 +55,7 @@ public class DbCleanupPortlet extends GenericPortlet {
 	}
 
 	@ProcessAction(name="cleanSites")
-	public void processAction(
+	public void cleanSites(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws IOException, PortletException {
 
@@ -87,6 +86,14 @@ public class DbCleanupPortlet extends GenericPortlet {
 		}
 
 		actionRequest.setAttribute("siteCleaner", siteCleaner);
+	}
+
+	@ProcessAction(name="removeOrphanRecords")
+	public void removeOrphanRecords(
+			ActionRequest actionRequest, ActionResponse actionResponse) 
+		throws IOException, PortletException {
+
+		CorruptedDataCleanerUtil.clean();
 	}
 
 	protected void include(
