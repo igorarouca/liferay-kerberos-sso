@@ -1,9 +1,14 @@
 package com.cambiahealth.portal.dbcleanup.cleaners;
 
+import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.GROUP_ID_QUERY_PROPERTY;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import com.cambiahealth.portal.dbcleanup.DbCleanupConstants;
 import com.cambiahealth.portal.dbcleanup.service.CorruptedLayoutLocalServiceUtil;
 import com.cambiahealth.portal.dbcleanup.service.GroupUserRelationLocalServiceUtil;
-
 import com.liferay.portal.NoSuchGroupException;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -31,12 +36,6 @@ import com.liferay.portlet.journal.model.JournalContentSearch;
 import com.liferay.portlet.journal.service.JournalContentSearchLocalServiceUtil;
 import com.liferay.portlet.messageboards.model.MBThread;
 import com.liferay.portlet.messageboards.service.MBThreadLocalServiceUtil;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.GROUP_ID_QUERY_PROPERTY;
 public final class CorruptedDataCleanerUtil {
 
 	public static void clean(long[] groupIds) {
@@ -367,18 +366,21 @@ public final class CorruptedDataCleanerUtil {
 	}
 
 	private static void removeOrphanRecordsFor(final long groupId) {
-		CorruptedLayoutLocalServiceUtil.deleteCorruptedLayouts(groupId);
+		removeGroupUserRelations(groupId);
 
 		removeLayoutSetBranches(groupId);
+		CorruptedLayoutLocalServiceUtil.deleteCorruptedLayouts(groupId);
+
 		removePortletItems(groupId);
 		removeMBThreads(groupId);
-		removeAssetTags(groupId);
-		removeAssetVocabularies(groupId);
-		removeAssetEntries(groupId);
+
 		removeDDMContents(groupId);
 		removeJournalContentSearchEntriesFor(groupId);
 		removeDLFileVersions(groupId);
-		removeGroupUserRelations(groupId);
+
+		removeAssetVocabularies(groupId);
+		removeAssetTags(groupId);
+		removeAssetEntries(groupId);
 	}
 
 	private static void removePorletItem(PortletItem portletItem) {
