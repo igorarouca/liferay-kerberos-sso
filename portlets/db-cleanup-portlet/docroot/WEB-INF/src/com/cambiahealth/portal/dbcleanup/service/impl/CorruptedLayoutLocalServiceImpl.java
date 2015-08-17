@@ -58,13 +58,13 @@ public class CorruptedLayoutLocalServiceImpl
 	extends CorruptedLayoutLocalServiceBaseImpl {
 
 	public void deleteCorruptedLayout(Layout layout) {
+		deleteCorruptedLayoutReferences(layout);
+
 		try {
 			layoutLocalService.deleteLayout(layout);
 		}
 		catch (SystemException e) {
 		}
-
-		deleteCorruptedLayoutReferences(layout);
 	}
 
 	public void deleteCorruptedLayoutReferences(Layout layout) {
