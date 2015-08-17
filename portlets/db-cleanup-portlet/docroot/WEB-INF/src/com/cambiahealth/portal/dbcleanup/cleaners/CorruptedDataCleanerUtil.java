@@ -36,6 +36,8 @@ import com.liferay.portlet.journal.model.JournalContentSearch;
 import com.liferay.portlet.journal.service.JournalContentSearchLocalServiceUtil;
 import com.liferay.portlet.messageboards.model.MBThread;
 import com.liferay.portlet.messageboards.service.MBThreadLocalServiceUtil;
+import com.liferay.portlet.social.model.SocialActivity;
+import com.liferay.portlet.social.service.SocialActivityLocalServiceUtil;
 public final class CorruptedDataCleanerUtil {
 
 	public static void clean(long[] groupIds) {
@@ -373,6 +375,7 @@ public final class CorruptedDataCleanerUtil {
 
 		removePortletItems(groupId);
 		removeMBThreads(groupId);
+		removeSocialActivities(groupId);
 
 		removeDDMContents(groupId);
 		removeJournalContentSearchEntriesFor(groupId);
@@ -473,6 +476,48 @@ public final class CorruptedDataCleanerUtil {
 				: resourceTypePermissions) {
 
 			removeResourceTypePermission(resourceTypePermission);
+		}
+	}
+
+	private static void removeSocialActivity(SocialActivity socialActivity) {
+		try {
+			SocialActivityLocalServiceUtil.deleteActivity(socialActivity);
+
+			_log.info(
+				">>> Deleted social activity: " + 
+					socialActivity.getPrimaryKey() + " for groupId: " + 
+						socialActivity.getGroupId());
+		}
+		catch (SystemException se) {
+			_log.error(
+				">>> Error deleting social activity: " + 
+					socialActivity.getPrimaryKey() + " for groupId: " + 
+						socialActivity.getGroupId(), se);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private static void removeSocialActivities(long groupId) {
+		DynamicQuery query = SocialActivityLocalServiceUtil.dynamicQuery();
+		query.add(GROUP_ID_QUERY_PROPERTY.eq(groupId));
+		
+		List<SocialActivity> socialActivities = null;
+		try {
+			socialActivities = 
+				SocialActivityLocalServiceUtil.dynamicQuery(query);
+
+		}
+		catch (SystemException se) {
+			_log.error(">>> Error retrieving social activities for groupId: " +
+				groupId, se);
+		}
+
+		if (socialActivities == null) {
+			return;
+		}
+
+		for (SocialActivity socialActivity : socialActivities) {
+			removeSocialActivity(socialActivity);
 		}
 	}
 
