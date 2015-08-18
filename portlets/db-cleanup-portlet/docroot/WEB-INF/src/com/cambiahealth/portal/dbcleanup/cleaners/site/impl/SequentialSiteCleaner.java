@@ -43,6 +43,7 @@ class SequentialSiteCleaner extends AbstractSiteCleaner {
 
 	@Override
 	protected void shutdown() {
+		super.shutdown();
 		_currentState = State.TERMINATED;
 	}
 
@@ -52,10 +53,10 @@ class SequentialSiteCleaner extends AbstractSiteCleaner {
 		_currentState = State.CREATED;
 	}
 
-	private static enum State { CREATED, RUNNING, TERMINATED };
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		SequentialSiteCleaner.class);
+
+	private static enum State { CREATED, RUNNING, TERMINATED };
 
 	private State _currentState;
 

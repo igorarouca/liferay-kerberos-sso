@@ -1,6 +1,18 @@
 package com.cambiahealth.portal.dbcleanup.portlet;
 
+import com.cambiahealth.portal.dbcleanup.DbCleanupConstants;
+import com.cambiahealth.portal.dbcleanup.cleaners.CorruptedDataCleanerUtil;
+import com.cambiahealth.portal.dbcleanup.cleaners.SiteCleanerUtil;
+import com.cambiahealth.portal.dbcleanup.cleaners.site.SiteCleaner;
+
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.util.PortalUtil;
+
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,20 +25,50 @@ import javax.portlet.ProcessAction;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-import com.cambiahealth.portal.dbcleanup.DbCleanupConstants;
-import com.cambiahealth.portal.dbcleanup.cleaners.CorruptedDataCleanerUtil;
-import com.cambiahealth.portal.dbcleanup.cleaners.SiteCleanerUtil;
-import com.cambiahealth.portal.dbcleanup.cleaners.site.SiteCleaner;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.servlet.SessionErrors;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.util.PortalUtil;
-
 /**
  * Portlet implementation class SiteCleanupPortlet
  */
 public class DbCleanupPortlet extends GenericPortlet {
+
+	@ProcessAction(name="cleanSites")
+	public void cleanSites(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws IOException, PortletException {
+
+		_log.debug(">>> Clean sites action was triggered");
+
+		String siteList = StringUtil.trim(actionRequest.getParameter("sites"));
+
+		if ((siteList == null) || siteList.isEmpty()) {
+			SessionErrors.add(actionRequest, "empty-site-list");
+			_log.error(">>> Please provide a list of sites to be removed");
+			return;
+		}
+
+		long companyId = PortalUtil.getCompanyId(actionRequest);
+		List<String> siteNames = new ArrayList<>();
+
+		for (String name : siteList.split(_LINE_SEPARATOR_REGEX)) {
+			siteNames.add(StringUtil.trim(name));
+		}
+
+		SiteCleaner siteCleaner = null;
+
+		if (DbCleanupConstants.PARALLEL_EXECUTION_ENABLED) {
+			_log.debug(">>> Creating parallel site cleaner");
+
+			siteCleaner = SiteCleanerUtil.getParallelSiteCleaner(
+				companyId, siteNames);
+		}
+		else {
+			_log.debug(">>> Creating sequential site cleaner");
+
+			siteCleaner = SiteCleanerUtil.getSequentialSiteCleaner(
+				companyId, siteNames);
+		}
+
+		actionRequest.setAttribute("siteCleaner", siteCleaner);
+	}
 
 	public void doView(
 			RenderRequest renderRequest, RenderResponse renderResponse)
@@ -54,43 +96,9 @@ public class DbCleanupPortlet extends GenericPortlet {
 		viewTemplate = getInitParameter("view-template");
 	}
 
-	@ProcessAction(name="cleanSites")
-	public void cleanSites(
-			ActionRequest actionRequest, ActionResponse actionResponse)
-		throws IOException, PortletException {
-
-		String siteList = StringUtil.trim(actionRequest.getParameter("sites"));
-
-		if ((siteList == null) || siteList.isEmpty()) {
-			SessionErrors.add(actionRequest, "empty-site-list");
-			_log.error(">>> Please provide a list of sites to be removed");
-			return;
-		}
-
-		long companyId = PortalUtil.getCompanyId(actionRequest);
-		List<String> siteNames = new ArrayList<>();
-
-		for (String name : siteList.split(_LINE_SEPARATOR_REGEX)) {
-			siteNames.add(StringUtil.trim(name));
-		}
-
-		SiteCleaner siteCleaner = null;
-
-		if (DbCleanupConstants.PARALLEL_EXECUTION_ENABLED) {
-			siteCleaner = SiteCleanerUtil.getParallelSiteCleaner(
-				companyId, siteNames);
-		}
-		else {
-			siteCleaner = SiteCleanerUtil.getSequentialSiteCleaner(
-				companyId, siteNames);
-		}
-
-		actionRequest.setAttribute("siteCleaner", siteCleaner);
-	}
-
 	@ProcessAction(name="removeOrphanRecords")
 	public void removeOrphanRecords(
-			ActionRequest actionRequest, ActionResponse actionResponse) 
+			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws IOException, PortletException {
 
 		CorruptedDataCleanerUtil.clean();

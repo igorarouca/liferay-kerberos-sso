@@ -1,14 +1,9 @@
 package com.cambiahealth.portal.dbcleanup.cleaners;
 
-import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.GROUP_ID_QUERY_PROPERTY;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import com.cambiahealth.portal.dbcleanup.DbCleanupConstants;
 import com.cambiahealth.portal.dbcleanup.service.CorruptedLayoutLocalServiceUtil;
 import com.cambiahealth.portal.dbcleanup.service.GroupUserRelationLocalServiceUtil;
+
 import com.liferay.portal.NoSuchGroupException;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -39,6 +34,12 @@ import com.liferay.portlet.messageboards.model.MBThread;
 import com.liferay.portlet.messageboards.service.MBThreadLocalServiceUtil;
 import com.liferay.portlet.social.model.SocialActivity;
 import com.liferay.portlet.social.service.SocialActivityLocalServiceUtil;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.GROUP_ID_QUERY_PROPERTY;
 public final class CorruptedDataCleanerUtil {
 
 	public static void clean() {
@@ -84,7 +85,7 @@ public final class CorruptedDataCleanerUtil {
 			groupIdCommaSeparatedList, 0l);
 
 		_log.info(
-			">>> 'db.cleanup.dangling.group.ids' = " + 
+			">>> 'db.cleanup.dangling.group.ids' = " +
 				Arrays.toString(danglingGroupIds));
 
 		return danglingGroupIds;
@@ -504,32 +505,15 @@ public final class CorruptedDataCleanerUtil {
 		}
 	}
 
-	private static void removeSocialActivity(SocialActivity socialActivity) {
-		try {
-			SocialActivityLocalServiceUtil.deleteActivity(socialActivity);
-
-			_log.info(
-				">>> Deleted social activity: " + 
-					socialActivity.getPrimaryKey() + " for groupId: " + 
-						socialActivity.getGroupId());
-		}
-		catch (SystemException se) {
-			_log.error(
-				">>> Error deleting social activity: " + 
-					socialActivity.getPrimaryKey() + " for groupId: " + 
-						socialActivity.getGroupId(), se);
-		}
-	}
-
 	@SuppressWarnings("unchecked")
 	private static void removeSocialActivities(long groupId) {
 		DynamicQuery query = SocialActivityLocalServiceUtil.dynamicQuery();
 		query.add(GROUP_ID_QUERY_PROPERTY.eq(groupId));
-		
+
 		List<SocialActivity> socialActivities = null;
 		try {
-			socialActivities = 
-				SocialActivityLocalServiceUtil.dynamicQuery(query);
+			socialActivities = SocialActivityLocalServiceUtil.dynamicQuery(
+				query);
 
 		}
 		catch (SystemException se) {
@@ -543,6 +527,23 @@ public final class CorruptedDataCleanerUtil {
 
 		for (SocialActivity socialActivity : socialActivities) {
 			removeSocialActivity(socialActivity);
+		}
+	}
+
+	private static void removeSocialActivity(SocialActivity socialActivity) {
+		try {
+			SocialActivityLocalServiceUtil.deleteActivity(socialActivity);
+
+			_log.info(
+				">>> Deleted social activity: " +
+					socialActivity.getPrimaryKey() + " for groupId: " +
+						socialActivity.getGroupId());
+		}
+		catch (SystemException se) {
+			_log.error(
+				">>> Error deleting social activity: " +
+					socialActivity.getPrimaryKey() + " for groupId: " +
+						socialActivity.getGroupId(), se);
 		}
 	}
 

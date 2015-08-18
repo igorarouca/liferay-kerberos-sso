@@ -5,6 +5,7 @@ import com.cambiahealth.portal.dbcleanup.cleaners.site.SiteCleaner;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.Group;
 
 import java.util.ArrayList;
@@ -99,7 +100,8 @@ class ParallelSiteCleaner extends AbstractSiteCleaner implements SiteCleaner {
 				final Thread currentThread = Thread.currentThread();
 				final String oldThreadName = currentThread.getName();
 				currentThread.setName(
-					"Reindexing-" + indexer.getClass().getSimpleName());
+					"Reindexing-" + getThreadIndex() + StringPool.DASH +
+					indexer.getClass().getSimpleName());
 
 				try {
 					ParallelSiteCleaner.super.reindex(indexer);
@@ -119,7 +121,9 @@ class ParallelSiteCleaner extends AbstractSiteCleaner implements SiteCleaner {
 			public Group call() {
 				final Thread currentThread = Thread.currentThread();
 				final String oldThreadName = currentThread.getName();
-				currentThread.setName("SiteCleaner-" + site.getGroupId());
+				currentThread.setName(
+					"SiteCleaner-" + getThreadIndex() + StringPool.DASH +
+					site.getGroupId());
 
 				try {
 					return remove(site);
@@ -139,8 +143,9 @@ class ParallelSiteCleaner extends AbstractSiteCleaner implements SiteCleaner {
 
 	@Override
 	protected void shutdown() {
+		super.shutdown();
 		_threadExecutor.shutdownNow();
-		_log.info(">>> Shutdown thread executor");
+		_log.debug(">>> Shutdown thread executor");
 	}
 
 	ParallelSiteCleaner(long companyId, List<String> siteNames) {
