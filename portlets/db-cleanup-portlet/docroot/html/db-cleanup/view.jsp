@@ -2,6 +2,7 @@
 
 <portlet:actionURL name="cleanSites" var="cleanSites" />
 
+<liferay-ui:error key="error-cleaning-sites" message="Error cleaning sites. Check server log for details" />
 <liferay-ui:error key="empty-site-list" message="Please provide a list of sites to be removed" />
 <liferay-ui:error key="no-sites-to-remove" message="There are no sites to remove" />
 

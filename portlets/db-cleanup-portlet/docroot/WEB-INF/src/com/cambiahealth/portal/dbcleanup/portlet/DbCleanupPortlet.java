@@ -8,7 +8,10 @@ import com.cambiahealth.portal.dbcleanup.cleaners.site.SiteCleaner;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.model.Group;
 import com.liferay.portal.util.PortalUtil;
 
 import java.io.IOException;
@@ -20,6 +23,7 @@ import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.GenericPortlet;
 import javax.portlet.PortletException;
+import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequestDispatcher;
 import javax.portlet.ProcessAction;
 import javax.portlet.RenderRequest;
@@ -53,7 +57,6 @@ public class DbCleanupPortlet extends GenericPortlet {
 		}
 
 		SiteCleaner siteCleaner = null;
-
 		if (DbCleanupConstants.PARALLEL_EXECUTION_ENABLED) {
 			_log.debug(">>> Creating parallel site cleaner");
 
@@ -67,28 +70,52 @@ public class DbCleanupPortlet extends GenericPortlet {
 				companyId, siteNames);
 		}
 
-		actionRequest.setAttribute("siteCleaner", siteCleaner);
+		PortletPreferences preferences = actionRequest.getPreferences();
+
+		boolean cleaningSites = GetterUtil.getBoolean(preferences.getValue(
+			_CLEANING_SITES_FLAG, null), false);
+
+		if (cleaningSites) {
+			return;
+		}
+
+		try {
+			preferences.setValue(_CLEANING_SITES_FLAG, StringPool.TRUE);
+			preferences.store();
+
+			List<Group> removedSites = siteCleaner.call();
+
+			preferences.reset(_CLEANING_SITES_FLAG);;
+			preferences.store();
+
+			actionRequest.setAttribute("removedSites", removedSites);
+		}
+		catch (Exception e) {
+			_log.error(">>> Error cleaning sites", e);
+			SessionErrors.add(actionRequest, "error-cleaning-sites");
+		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void doView(
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
 
-		SiteCleaner siteCleaner =
-			(SiteCleaner)renderRequest.getAttribute("siteCleaner");
+		List<Group> removedSites =
+			(List<Group>)renderRequest.getAttribute("removedSites");
 
-		if (siteCleaner == null) {
+		if (removedSites == null) {
 			include(viewTemplate, renderRequest, renderResponse);
 			return;
 		}
 
-		if (siteCleaner.hasSitesToRemove()) {
-			include(resultTemplate, renderRequest, renderResponse);
+		if (removedSites.isEmpty()) {
+			SessionErrors.add(renderRequest, "no-sites-to-remove");
+			include(viewTemplate, renderRequest, renderResponse);
 			return;
 		}
 
-		SessionErrors.add(renderRequest, "no-sites-to-remove");
-		include(viewTemplate, renderRequest, renderResponse);
+		include(resultTemplate, renderRequest, renderResponse);
 	}
 
 	public void init() {
@@ -122,6 +149,8 @@ public class DbCleanupPortlet extends GenericPortlet {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DbCleanupPortlet.class);
+
+	private static final String _CLEANING_SITES_FLAG = "cleaningSites";
 
 	private static final String _LINE_SEPARATOR_REGEX = "[\\r\\n]+";
 
