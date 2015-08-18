@@ -3,6 +3,7 @@ package com.cambiahealth.portal.dbcleanup.cleaners;
 import com.cambiahealth.portal.dbcleanup.DbCleanupConstants;
 import com.cambiahealth.portal.dbcleanup.service.CorruptedLayoutLocalServiceUtil;
 import com.cambiahealth.portal.dbcleanup.service.GroupUserRelationLocalServiceUtil;
+import com.cambiahealth.portal.dbcleanup.util.ThreadIndex;
 
 import com.liferay.portal.NoSuchGroupException;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
@@ -49,7 +50,7 @@ public final class CorruptedDataCleanerUtil {
 	public static void clean(long[] groupIds) {
 		final Thread currentThread = Thread.currentThread();
 		final String oldThreadName = currentThread.getName();
-		currentThread.setName("CorruptedData-Clean");
+		currentThread.setName("CorruptedData-Clean-" + ThreadIndex.get());
 
 		_log.info(
 			">>> Started cleanup of orphan records for groupIds: " +

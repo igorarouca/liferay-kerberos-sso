@@ -3,6 +3,7 @@ package com.cambiahealth.portal.dbcleanup.cleaners.site.impl;
 import com.cambiahealth.portal.dbcleanup.cleaners.CorruptedDataCleanerUtil;
 import com.cambiahealth.portal.dbcleanup.cleaners.site.SiteCleaner;
 import com.cambiahealth.portal.dbcleanup.service.CorruptedLayoutLocalServiceUtil;
+import com.cambiahealth.portal.dbcleanup.util.ThreadIndex;
 
 import com.liferay.portal.kernel.dao.orm.ORMException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -23,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.BULK_REINDEX_ENABLED;
 import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.PATCH_CAMBIA_129_INSTALLED;
@@ -36,8 +36,7 @@ public abstract class AbstractSiteCleaner implements SiteCleaner {
 
 		final Thread currentThread = Thread.currentThread();
 		final String oldThreadName = currentThread.getName();
-		currentThread.setName(
-			"SiteCleaner-Call-" + _threadIndex.getAndIncrement());
+		currentThread.setName("SiteCleaner-Call-" + getThreadIndex());
 
 		List<Group> removedSites = Collections.emptyList();
 
@@ -197,7 +196,7 @@ public abstract class AbstractSiteCleaner implements SiteCleaner {
 	}
 
 	protected int getThreadIndex() {
-		return _threadIndex.getAndIncrement();
+		return ThreadIndex.get();
 	}
 
 	protected void reindex(Indexer indexer) {
@@ -285,8 +284,6 @@ public abstract class AbstractSiteCleaner implements SiteCleaner {
 	protected final long _companyId;
 
 	protected final List<Group> _sitesToBeRemoved;
-
-	private static final AtomicInteger _threadIndex = new AtomicInteger(0);
 
 	private static Log _log = LogFactoryUtil.getLog(AbstractSiteCleaner.class);
 
