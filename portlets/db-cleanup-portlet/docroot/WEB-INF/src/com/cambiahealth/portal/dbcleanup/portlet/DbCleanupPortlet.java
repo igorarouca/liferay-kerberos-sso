@@ -1,21 +1,6 @@
 package com.cambiahealth.portal.dbcleanup.portlet;
 
-import com.cambiahealth.portal.dbcleanup.DbCleanupConstants;
-import com.cambiahealth.portal.dbcleanup.cleaners.CorruptedDataCleanerUtil;
-import com.cambiahealth.portal.dbcleanup.cleaners.SiteCleanerUtil;
-import com.cambiahealth.portal.dbcleanup.cleaners.site.SiteCleaner;
-
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.servlet.SessionErrors;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.util.PortalUtil;
-
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +13,19 @@ import javax.portlet.PortletRequestDispatcher;
 import javax.portlet.ProcessAction;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
+
+import com.cambiahealth.portal.dbcleanup.DbCleanupConstants;
+import com.cambiahealth.portal.dbcleanup.cleaners.CorruptedDataCleanerUtil;
+import com.cambiahealth.portal.dbcleanup.cleaners.SiteCleanerUtil;
+import com.cambiahealth.portal.dbcleanup.cleaners.site.SiteCleaner;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.model.Group;
+import com.liferay.portal.util.PortalUtil;
 
 /**
  * Portlet implementation class SiteCleanupPortlet
@@ -85,14 +83,15 @@ public class DbCleanupPortlet extends GenericPortlet {
 
 			List<Group> removedSites = siteCleaner.call();
 
-			preferences.reset(_CLEANING_SITES_FLAG);;
-			preferences.store();
-
 			actionRequest.setAttribute("removedSites", removedSites);
 		}
 		catch (Exception e) {
 			_log.error(">>> Error cleaning sites", e);
 			SessionErrors.add(actionRequest, "error-cleaning-sites");
+		}
+		finally {
+			preferences.reset(_CLEANING_SITES_FLAG);;
+			preferences.store();
 		}
 	}
 
