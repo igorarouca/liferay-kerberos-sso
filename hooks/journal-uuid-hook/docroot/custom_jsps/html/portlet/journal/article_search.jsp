@@ -35,7 +35,7 @@ ArticleDisplayTerms displayTerms = (ArticleDisplayTerms)searchContainer.getDispl
 		<aui:input label="uuid" name="<%= displayTerms.UUID %>" size="20" value="<%= displayTerms.getUuid() %>" />
 
 		<%-- Change label from 'ID' to 'Article ID' --%>
-		<aui:input label="article id" name="<%= displayTerms.ARTICLE_ID %>" size="20" value="<%= displayTerms.getArticleId() %>" />
+		<aui:input label="Article ID" name="<%= displayTerms.ARTICLE_ID %>" size="20" value="<%= displayTerms.getArticleId() %>" />
 
 		<%-- *** Customization ends here *** --%>
 
