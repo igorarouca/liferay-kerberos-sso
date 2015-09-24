@@ -1,4 +1,11 @@
-package com.liferay.portlet.journal.service.impl;
+package com.cambiahealth.portal.hook.service;
+
+import static com.cambiahealth.portal.hook.search.Field.UUID;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.search.Field;
@@ -10,22 +17,23 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portlet.journal.model.JournalArticle;
-import com.liferay.portlet.journal.service.CambiaJournalArticleLocalService;
+import com.liferay.portlet.journal.service.JournalArticleLocalService;
+import com.liferay.portlet.journal.service.JournalArticleLocalServiceWrapper;
 
-import java.io.Serializable;
+public class CambiaJournalArticleLocalService 
+	extends JournalArticleLocalServiceWrapper {
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-public class CambiaJournalArticleLocalServiceImpl
-	extends JournalArticleLocalServiceImpl
-	implements CambiaJournalArticleLocalService {
+	public CambiaJournalArticleLocalService(
+		JournalArticleLocalService journalArticleLocalService) {
+
+		super(journalArticleLocalService);
+	}
 
 	@Override
 	public Hits search(
-			long companyId, long groupId, long classNameId, String uuid,
-			String articleId, String title, String description, String content,
-			String type, String status, String structureId, String templateId,
+			long companyId, long groupId, long classNameId, String articleId, 
+			String title, String description, String content, String type, 
+			String status, String structureId, String templateId, 
 			LinkedHashMap<String, Object> params, boolean andSearch, int start,
 			int end, Sort sort)
 		throws SystemException {
@@ -44,7 +52,12 @@ public class CambiaJournalArticleLocalServiceImpl
 			attributes.put(Field.STATUS, status);
 			attributes.put(Field.TITLE, title);
 			attributes.put(Field.TYPE, type);
-			attributes.put("uuid", uuid);
+
+			// *** Customization begins here ***
+			// Using 'description' to pass UUID in the search query
+			attributes.put(UUID, description);
+			// *** Customization ends here ***
+
 			attributes.put("articleId", articleId);
 			attributes.put("params", params);
 			attributes.put("structureId", structureId);

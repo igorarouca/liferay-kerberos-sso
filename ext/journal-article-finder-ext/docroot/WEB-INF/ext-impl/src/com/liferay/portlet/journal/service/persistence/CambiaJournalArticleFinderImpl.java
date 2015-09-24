@@ -1,5 +1,10 @@
 package com.liferay.portlet.journal.service.persistence;
 
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
@@ -15,88 +20,29 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.security.permission.InlineSQLHelperUtil;
 import com.liferay.portlet.journal.model.JournalArticle;
 import com.liferay.portlet.journal.model.impl.JournalArticleImpl;
-import com.liferay.portlet.journal.service.CambiaJournalArticleFinder;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
-import java.sql.Timestamp;
-
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-public class CambiaJournalArticleFinderImpl extends JournalArticleFinderImpl
-	implements CambiaJournalArticleFinder {
-
-	public static final String COUNT_BY_C_G_C_U_A_V_T_D_C_T_S_T_D_S_R =
-		JournalArticleFinder.class.getName() +
-			".countByC_G_C_U_A_V_T_D_C_T_S_T_D_S_R";
-
-	public static final String FIND_BY_C_G_C_U_A_V_T_D_C_T_S_T_D_S_R =
-		JournalArticleFinder.class.getName() +
-			".findByC_G_C_U_A_V_T_D_C_T_S_T_D_S_R";
-
-	@Override
-	public int filterCountByC_G_C_U_A_V_T_D_C_T_S_T_D_S_R(
-			long companyId, long groupId, long classNameId, String uuid,
-			String articleId, Double version, String title, String description,
-			String content, String type, String structureId, String templateId,
-			Date displayDateGT, Date displayDateLT, int status, Date reviewDate,
-			boolean andOperator)
-		throws SystemException {
-
-		String[] articleIds = CustomSQLUtil.keywords(articleId, false);
-		String[] contents = CustomSQLUtil.keywords(content, false);
-		String[] descriptions = CustomSQLUtil.keywords(description, false);
-		String[] structureIds = CustomSQLUtil.keywords(structureId, false);
-		String[] templateIds = CustomSQLUtil.keywords(templateId, false);
-		String[] titles = CustomSQLUtil.keywords(title);
-		String[] uuids = CustomSQLUtil.keywords(uuid, false);
-
-		return doCountByC_G_C_U_A_V_T_D_C_T_S_T_D_S_R(
-			companyId, groupId, classNameId, uuids, articleIds, version, titles,
-			descriptions, contents, type, structureIds, templateIds,
-			displayDateGT, displayDateLT, status, reviewDate, andOperator,
-			andOperator);
-	}
-
-	@Override
-	public List<JournalArticle> findByC_G_C_U_A_V_T_D_C_T_S_T_D_S_R(
-			long companyId, long groupId, long classNameId, String uuid,
-			String articleId, Double version, String title, String description,
-			String content, String type, String structureId, String templateId,
-			Date displayDateGT, Date displayDateLT, int status, Date reviewDate,
-			boolean andOperator, int start, int end,
-			OrderByComparator orderByComparator)
-		throws SystemException {
-
-		String[] uuids = CustomSQLUtil.keywords(uuid, false);
-		String[] articleIds = CustomSQLUtil.keywords(articleId, false);
-		String[] titles = CustomSQLUtil.keywords(title);
-		String[] descriptions = CustomSQLUtil.keywords(description, false);
-		String[] contents = CustomSQLUtil.keywords(content, false);
-		String[] structureIds = CustomSQLUtil.keywords(structureId, false);
-		String[] templateIds = CustomSQLUtil.keywords(templateId, false);
-
-		return doFindByC_G_C_U_A_V_T_D_C_T_S_T_D_S_R(
-			companyId, groupId, classNameId, uuids, articleIds, version, titles,
-			descriptions, contents, type, structureIds, templateIds,
-			displayDateGT, displayDateLT, status, reviewDate, andOperator,
-			start, end, orderByComparator, false);
-	}
+public class CambiaJournalArticleFinderImpl extends JournalArticleFinderImpl {
 
 	@SuppressWarnings("unchecked")
-	protected int doCountByC_G_C_U_A_V_T_D_C_T_S_T_D_S_R(
-			long companyId, long groupId, long classNameId, String[] uuids,
-			String[] articleIds, Double version, String[] titles,
-			String[] descriptions, String[] contents, String type,
-			String[] structureIds, String[] templateIds, Date displayDateGT,
-			Date displayDateLT, int status, Date reviewDate,
-			boolean andOperator, boolean inlineSQLHelper)
+	@Override
+	protected int doCountByC_G_C_A_V_T_D_C_T_S_T_D_S_R(
+			long companyId, long groupId, long classNameId, String[] articleIds,
+			Double version, String[] titles, String[] descriptionsOrUuids, 
+			String[] contents, String type, String[] structureIds, 
+			String[] templateIds, Date displayDateGT, Date displayDateLT, 
+			int status, Date reviewDate, boolean andOperator, 
+			boolean inlineSQLHelper)
 		throws SystemException {
 
-		uuids = CustomSQLUtil.keywords(uuids, false);
 		articleIds = CustomSQLUtil.keywords(articleIds, false);
 		titles = CustomSQLUtil.keywords(titles);
-		descriptions = CustomSQLUtil.keywords(descriptions, false);
+
+		// *** Customization begins here ***
+		descriptionsOrUuids = 
+			CustomSQLUtil.keywords(descriptionsOrUuids, false);
+		// *** Customization ends here ***
+
 		contents = CustomSQLUtil.keywords(contents, false);
 		structureIds = CustomSQLUtil.keywords(structureIds, false);
 		templateIds = CustomSQLUtil.keywords(templateIds, false);
@@ -110,14 +56,11 @@ public class CambiaJournalArticleFinderImpl extends JournalArticleFinderImpl
 			session = openSession();
 
 			String sql = CustomSQLUtil.get(
-				COUNT_BY_C_G_C_U_A_V_T_D_C_T_S_T_D_S_R);
+				COUNT_BY_C_G_C_A_V_T_D_C_T_S_T_D_S_R);
 
 			if (groupId <= 0) {
 				sql = StringUtil.replace(sql, "(groupId = ?) AND", "");
 			}
-
-			sql = CustomSQLUtil.replaceKeywords(
-				sql, "uuid_", StringPool.LIKE, false, uuids);
 
 			sql = CustomSQLUtil.replaceKeywords(
 				sql, "articleId", StringPool.LIKE, false, articleIds);
@@ -129,8 +72,17 @@ public class CambiaJournalArticleFinderImpl extends JournalArticleFinderImpl
 
 			sql = CustomSQLUtil.replaceKeywords(
 				sql, "lower(title)", StringPool.LIKE, false, titles);
+
+			// *** Customization begins here ***
 			sql = CustomSQLUtil.replaceKeywords(
-				sql, "description", StringPool.LIKE, false, descriptions);
+				sql, "description", StringPool.LIKE, false,
+				descriptionsOrUuids);
+
+			// Add uuid_ to the query by reutilizing the description field
+			sql = CustomSQLUtil.replaceKeywords(
+				sql, "uuid_", StringPool.LIKE, false, descriptionsOrUuids);
+			// *** Customization ends here ***
+
 			sql = CustomSQLUtil.replaceKeywords(
 				sql, "content", StringPool.LIKE, false, contents);
 
@@ -199,7 +151,6 @@ public class CambiaJournalArticleFinderImpl extends JournalArticleFinderImpl
 			}
 
 			qPos.add(classNameId);
-			qPos.add(uuids, 2);
 			qPos.add(articleIds, 2);
 
 			if ((version != null) && (version > 0)) {
@@ -207,7 +158,13 @@ public class CambiaJournalArticleFinderImpl extends JournalArticleFinderImpl
 			}
 
 			qPos.add(titles, 2);
-			qPos.add(descriptions, 2);
+
+			// *** Customization begins here ***
+			// Add field twice, as it could be carrying descriptions or uuids
+			qPos.add(descriptionsOrUuids, 2);
+			qPos.add(descriptionsOrUuids, 2);
+			// *** Customization ends here ***
+
 			qPos.add(contents, 2);
 			qPos.add(displayDateGT_TS);
 			qPos.add(displayDateGT_TS);
@@ -257,20 +214,25 @@ public class CambiaJournalArticleFinderImpl extends JournalArticleFinderImpl
 	}
 
 	@SuppressWarnings("unchecked")
-	protected List<JournalArticle> doFindByC_G_C_U_A_V_T_D_C_T_S_T_D_S_R(
-			long companyId, long groupId, long classNameId, String[] uuids,
+	@Override
+	protected List<JournalArticle> doFindByC_G_C_A_V_T_D_C_T_S_T_D_S_R(
+			long companyId, long groupId, long classNameId,
 			String[] articleIds, Double version, String[] titles,
-			String[] descriptions, String[] contents, String type,
+			String[] descriptionsOrUuids, String[] contents, String type,
 			String[] structureIds, String[] templateIds, Date displayDateGT,
 			Date displayDateLT, int status, Date reviewDate,
 			boolean andOperator, int start, int end,
 			OrderByComparator orderByComparator, boolean inlineSQLHelper)
 		throws SystemException {
 
-		uuids = CustomSQLUtil.keywords(uuids, false);
 		articleIds = CustomSQLUtil.keywords(articleIds, false);
 		titles = CustomSQLUtil.keywords(titles);
-		descriptions = CustomSQLUtil.keywords(descriptions, false);
+
+		// *** Customization begins here ***
+		descriptionsOrUuids = 
+			CustomSQLUtil.keywords(descriptionsOrUuids, false);
+		// *** Customization ends here ***
+
 		contents = CustomSQLUtil.keywords(contents, false);
 		structureIds = CustomSQLUtil.keywords(structureIds, false);
 		templateIds = CustomSQLUtil.keywords(templateIds, false);
@@ -283,15 +245,11 @@ public class CambiaJournalArticleFinderImpl extends JournalArticleFinderImpl
 		try {
 			session = openSession();
 
-			String sql = CustomSQLUtil.get(
-				FIND_BY_C_G_C_U_A_V_T_D_C_T_S_T_D_S_R);
+			String sql = CustomSQLUtil.get(FIND_BY_C_G_C_A_V_T_D_C_T_S_T_D_S_R);
 
 			if (groupId <= 0) {
 				sql = StringUtil.replace(sql, "(groupId = ?) AND", "");
 			}
-
-			sql = CustomSQLUtil.replaceKeywords(
-				sql, "uuid_", StringPool.LIKE, false, uuids);
 
 			sql = CustomSQLUtil.replaceKeywords(
 				sql, "articleId", StringPool.LIKE, false, articleIds);
@@ -303,8 +261,18 @@ public class CambiaJournalArticleFinderImpl extends JournalArticleFinderImpl
 
 			sql = CustomSQLUtil.replaceKeywords(
 				sql, "lower(title)", StringPool.LIKE, false, titles);
+
+			// *** Customization begins here ***
 			sql = CustomSQLUtil.replaceKeywords(
-				sql, "description", StringPool.LIKE, false, descriptions);
+				sql, "description", StringPool.LIKE, false,
+				descriptionsOrUuids);
+
+			// Add uuid_ to the query by reutilizing the description field
+			sql = CustomSQLUtil.replaceKeywords(
+				sql, "uuid_", StringPool.LIKE, false, descriptionsOrUuids);
+			// *** Customization ends here ***
+
+
 			sql = CustomSQLUtil.replaceKeywords(
 				sql, "content", StringPool.LIKE, false, contents);
 
@@ -375,7 +343,6 @@ public class CambiaJournalArticleFinderImpl extends JournalArticleFinderImpl
 			}
 
 			qPos.add(classNameId);
-			qPos.add(uuids, 2);
 			qPos.add(articleIds, 2);
 
 			if ((version != null) && (version > 0)) {
@@ -383,7 +350,13 @@ public class CambiaJournalArticleFinderImpl extends JournalArticleFinderImpl
 			}
 
 			qPos.add(titles, 2);
-			qPos.add(descriptions, 2);
+
+			// *** Customization begins here ***
+			// Add field twice, as it could be carrying descriptions or uuids
+			qPos.add(descriptionsOrUuids, 2);
+			qPos.add(descriptionsOrUuids, 2);
+			// *** Customization ends here ***
+
 			qPos.add(contents, 2);
 			qPos.add(displayDateGT_TS);
 			qPos.add(displayDateGT_TS);

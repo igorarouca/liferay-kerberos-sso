@@ -9,4 +9,8 @@
 	    <indexer-post-processor-impl>com.cambiahealth.portal.hook.search.JournalArticleIndexerPostProcessor</indexer-post-processor-impl>
 	</indexer-post-processor>
 
+	<service>
+		<service-type>com.liferay.portlet.journal.service.JournalArticleLocalService</service-type>
+		<service-impl>com.cambiahealth.portal.hook.service.CambiaJournalArticleLocalService</service-impl>
+	</service>
 </hook>

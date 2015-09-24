@@ -20,10 +20,8 @@ public class JournalArticleIndexerPostProcessor extends
 					+ uuid);
 		}
 
-		document.addKeyword(_UUID, uuid);
+		document.addKeyword(Field.UUID, uuid);
 	}
-
-	private static final String _UUID = "uuid";
 
 	private static Log _log = LogFactoryUtil.getLog(
 		JournalArticleIndexerPostProcessor.class);

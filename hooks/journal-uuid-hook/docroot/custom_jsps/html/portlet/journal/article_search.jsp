@@ -30,18 +30,16 @@ ArticleDisplayTerms displayTerms = (ArticleDisplayTerms)searchContainer.getDispl
 	<aui:fieldset>
 
 		<%-- *** Customization begins here *** --%>
-
-		<%-- Add extra search field for UUID --%>
-		<aui:input label="uuid" name="<%= displayTerms.UUID %>" size="20" value="<%= displayTerms.getUuid() %>" />
-
 		<%-- Change label from 'ID' to 'Article ID' --%>
 		<aui:input label="Article ID" name="<%= displayTerms.ARTICLE_ID %>" size="20" value="<%= displayTerms.getArticleId() %>" />
-
 		<%-- *** Customization ends here *** --%>
 
 		<aui:input name="<%= displayTerms.TITLE %>" size="20" type="text" value="<%= displayTerms.getTitle() %>" />
 
-		<aui:input name="<%= displayTerms.DESCRIPTION %>" size="20" type="text" value="<%= displayTerms.getDescription() %>" />
+		<%-- *** Customization begins here *** --%>
+		<%-- Change label to repurpose the Description field for the UUID --%>
+		<aui:input label="UUID" name="description" size="20" type="text" value="<%= displayTerms.getDescription() %>" />
+		<%-- *** Customization ends here *** --%>
 
 		<aui:input name="<%= displayTerms.CONTENT %>" size="20" type="text" value="<%= displayTerms.getContent() %>" />
 
