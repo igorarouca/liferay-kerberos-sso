@@ -1,4 +1,4 @@
-package com.cambiahealth.portal.dbcleanup.cleaners.site;
+package com.cambiahealth.portal.dbcleanup.cleaner.site;
 
 import java.util.List;
 public interface SiteCleanerFactory {

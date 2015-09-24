@@ -1,4 +1,4 @@
-package com.cambiahealth.portal.dbcleanup.cleaners.site.impl;
+package com.cambiahealth.portal.dbcleanup.cleaner.site.impl;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;

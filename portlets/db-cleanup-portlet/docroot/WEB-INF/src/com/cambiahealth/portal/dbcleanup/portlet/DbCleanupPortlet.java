@@ -15,9 +15,9 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
 import com.cambiahealth.portal.dbcleanup.DbCleanupConstants;
-import com.cambiahealth.portal.dbcleanup.cleaners.CorruptedDataCleanerUtil;
-import com.cambiahealth.portal.dbcleanup.cleaners.SiteCleanerUtil;
-import com.cambiahealth.portal.dbcleanup.cleaners.site.SiteCleaner;
+import com.cambiahealth.portal.dbcleanup.cleaner.CorruptedDataCleanerUtil;
+import com.cambiahealth.portal.dbcleanup.cleaner.SiteCleanerUtil;
+import com.cambiahealth.portal.dbcleanup.cleaner.site.SiteCleaner;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;

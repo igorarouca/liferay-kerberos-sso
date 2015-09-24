@@ -1,10 +1,9 @@
-package com.cambiahealth.portal.dbcleanup.cleaners.site.impl;
+package com.cambiahealth.portal.dbcleanup.cleaner.site.impl;
 
-import com.cambiahealth.portal.dbcleanup.cleaners.CorruptedDataCleanerUtil;
-import com.cambiahealth.portal.dbcleanup.cleaners.site.SiteCleaner;
+import com.cambiahealth.portal.dbcleanup.cleaner.CorruptedDataCleanerUtil;
+import com.cambiahealth.portal.dbcleanup.cleaner.site.SiteCleaner;
 import com.cambiahealth.portal.dbcleanup.service.CorruptedLayoutLocalServiceUtil;
 import com.cambiahealth.portal.dbcleanup.util.ThreadIndex;
-
 import com.liferay.portal.kernel.dao.orm.ORMException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;

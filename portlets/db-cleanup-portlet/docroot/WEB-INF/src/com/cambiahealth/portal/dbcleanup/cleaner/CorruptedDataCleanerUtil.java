@@ -1,4 +1,4 @@
-package com.cambiahealth.portal.dbcleanup.cleaners;
+package com.cambiahealth.portal.dbcleanup.cleaner;
 
 import com.cambiahealth.portal.dbcleanup.DbCleanupConstants;
 import com.cambiahealth.portal.dbcleanup.service.CorruptedLayoutLocalServiceUtil;

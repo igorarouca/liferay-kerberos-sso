@@ -1,7 +1,7 @@
-package com.cambiahealth.portal.dbcleanup.cleaners.site.impl;
+package com.cambiahealth.portal.dbcleanup.cleaner.site.impl;
 
-import com.cambiahealth.portal.dbcleanup.cleaners.site.SiteCleaner;
-import com.cambiahealth.portal.dbcleanup.cleaners.site.SiteCleanerFactory;
+import com.cambiahealth.portal.dbcleanup.cleaner.site.SiteCleaner;
+import com.cambiahealth.portal.dbcleanup.cleaner.site.SiteCleanerFactory;
 
 import java.util.List;
 public class SiteCleanerFactoryImpl implements SiteCleanerFactory {

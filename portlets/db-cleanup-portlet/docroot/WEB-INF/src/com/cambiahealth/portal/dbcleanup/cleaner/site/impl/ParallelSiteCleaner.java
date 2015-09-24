@@ -1,7 +1,6 @@
-package com.cambiahealth.portal.dbcleanup.cleaners.site.impl;
+package com.cambiahealth.portal.dbcleanup.cleaner.site.impl;
 
-import com.cambiahealth.portal.dbcleanup.cleaners.site.SiteCleaner;
-
+import com.cambiahealth.portal.dbcleanup.cleaner.site.SiteCleaner;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Indexer;
