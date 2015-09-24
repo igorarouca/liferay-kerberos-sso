@@ -4,6 +4,7 @@ import com.cambiahealth.portal.dbcleanup.cleaner.CorruptedDataCleanerUtil;
 import com.cambiahealth.portal.dbcleanup.cleaner.site.SiteCleaner;
 import com.cambiahealth.portal.dbcleanup.service.CorruptedLayoutLocalServiceUtil;
 import com.cambiahealth.portal.dbcleanup.util.ThreadIndex;
+
 import com.liferay.portal.kernel.dao.orm.ORMException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -84,6 +85,7 @@ public abstract class AbstractSiteCleaner implements SiteCleaner {
 		}
 
 		cleanOrphanData(removedSites);
+		_customFieldCleaner.run();
 
 		return removedSites;
 	}
@@ -93,12 +95,15 @@ public abstract class AbstractSiteCleaner implements SiteCleaner {
 		return !_sitesToBeRemoved.isEmpty();
 	}
 
-	protected AbstractSiteCleaner(long companyId, List<String> siteNames) {
+	protected AbstractSiteCleaner(
+		long companyId, List<String> siteNames, Runnable customFieldCleaner) {
+
 		if ((siteNames == null) || siteNames.isEmpty()) {
 			throw new IllegalArgumentException("Site list is empty!");
 		}
 
 		_companyId = companyId;
+		_customFieldCleaner = customFieldCleaner;
 		_sitesToBeRemoved = new ArrayList<>();
 
 		Collections.sort(siteNames);
@@ -281,7 +286,7 @@ public abstract class AbstractSiteCleaner implements SiteCleaner {
 	}
 
 	protected final long _companyId;
-
+	protected Runnable _customFieldCleaner;
 	protected final List<Group> _sitesToBeRemoved;
 
 	private static Log _log = LogFactoryUtil.getLog(AbstractSiteCleaner.class);

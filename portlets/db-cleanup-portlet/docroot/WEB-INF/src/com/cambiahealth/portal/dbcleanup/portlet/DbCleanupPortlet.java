@@ -1,6 +1,20 @@
 package com.cambiahealth.portal.dbcleanup.portlet;
 
+import com.cambiahealth.portal.dbcleanup.cleaner.CorruptedDataCleanerUtil;
+import com.cambiahealth.portal.dbcleanup.cleaner.SiteCleanerUtil;
+import com.cambiahealth.portal.dbcleanup.cleaner.site.SiteCleaner;
+
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.model.Group;
+import com.liferay.portal.util.PortalUtil;
+
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,19 +27,6 @@ import javax.portlet.PortletRequestDispatcher;
 import javax.portlet.ProcessAction;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
-
-import com.cambiahealth.portal.dbcleanup.DbCleanupConstants;
-import com.cambiahealth.portal.dbcleanup.cleaner.CorruptedDataCleanerUtil;
-import com.cambiahealth.portal.dbcleanup.cleaner.SiteCleanerUtil;
-import com.cambiahealth.portal.dbcleanup.cleaner.site.SiteCleaner;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.servlet.SessionErrors;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.model.Group;
-import com.liferay.portal.util.PortalUtil;
 
 /**
  * Portlet implementation class SiteCleanupPortlet
@@ -54,19 +55,8 @@ public class DbCleanupPortlet extends GenericPortlet {
 			siteNames.add(StringUtil.trim(name));
 		}
 
-		SiteCleaner siteCleaner = null;
-		if (DbCleanupConstants.PARALLEL_EXECUTION_ENABLED) {
-			_log.debug(">>> Creating parallel site cleaner");
-
-			siteCleaner = SiteCleanerUtil.getParallelSiteCleaner(
-				companyId, siteNames);
-		}
-		else {
-			_log.debug(">>> Creating sequential site cleaner");
-
-			siteCleaner = SiteCleanerUtil.getSequentialSiteCleaner(
-				companyId, siteNames);
-		}
+		SiteCleaner siteCleaner = SiteCleanerUtil.newSiteCleaner(
+			companyId, siteNames);
 
 		PortletPreferences preferences = actionRequest.getPreferences();
 

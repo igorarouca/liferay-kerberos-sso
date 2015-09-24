@@ -2,24 +2,42 @@ package com.cambiahealth.portal.dbcleanup.cleaner;
 
 import com.cambiahealth.portal.dbcleanup.cleaner.site.SiteCleaner;
 import com.cambiahealth.portal.dbcleanup.cleaner.site.SiteCleanerFactory;
+import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.impl.CustomFieldCleanerFactoryImpl;
 import com.cambiahealth.portal.dbcleanup.cleaner.site.impl.SiteCleanerFactoryImpl;
 
 import java.util.List;
 public class SiteCleanerUtil {
 
-	public static SiteCleaner getParallelSiteCleaner(
+	public static SiteCleaner newSiteCleaner(
 		long companyId, List<String> siteNames) {
 
-		return _factory.getParallelSiteCleaner(companyId, siteNames);
+		String[][] customFieldMigrations = new String[][] {
+		{ "footer-social-media-article-id", "footer-social-media-uuid" },
+		{ "more-information-article-id", "more-information-uuid" },
+		{ "primary-navigation-article-id", "primary-navigation-uuid" },
+		{ "primary-navigation-top-article-id", "primary-navigation-top-uuid" }};
+
+		Runnable customFieldCleaner = newCustomFieldCleaner(
+			companyId, customFieldMigrations);
+
+		return _siteCleanerFactory.newSiteCleaner(
+			companyId, siteNames, customFieldCleaner);
 	}
 
-	public static SiteCleaner getSequentialSiteCleaner(
-		long companyId, java.util.List<String> siteNames) {
+	private static Runnable newCustomFieldCleaner(
+		long companyId, String[][] customFieldMigrations) {
 
-		return _factory.getSequentialSiteCleaner(companyId, siteNames);
-	};
+		return _customFieldCleanerFactory.newCustomFieldCleaner(
+			companyId, customFieldMigrations);
+	}
 
-	private static final SiteCleanerFactory _factory =
+	private SiteCleanerUtil() {
+	}
+
+	private static final SiteCleanerFactory _siteCleanerFactory =
 		new SiteCleanerFactoryImpl();
+
+	private static final CustomFieldCleanerFactoryImpl
+		_customFieldCleanerFactory = new CustomFieldCleanerFactoryImpl();
 
 }

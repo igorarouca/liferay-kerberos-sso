@@ -40,6 +40,16 @@ public final class DbCleanupConstants {
 
 	public static final String REGENCE_PRODUCER_OR = "regence_producer_or";
 
+	public static final boolean SITE_CUSTOM_FIELD_MIGRATION_ENABLED =
+		GetterUtil.getBoolean(
+			PropsUtil.get(Keys._DB_CLEANUP_SITE_CUSTOM_FIELD_MIGRATION_ENABLED),
+			Defaults._DB_CLEANUP_SITE_CUSTOM_FIELD_MIGRATION_ENABLED);
+
+	public static final String SITE_CUSTOM_FIELD_MIGRATION_GROUP_IDS =
+		GetterUtil.getString(PropsUtil.get(
+			Keys._DB_CLEANUP_SITE_CUSTOM_FIELD_MIGRATION_GROUP_IDS),
+				Defaults._DB_CLEANUP_SITE_CUSTOM_FIELD_MIGRATION_GROUP_IDS);
+
 	public static final long SITE_REMOVAL_TIMEOUT =
 		GetterUtil.getLong(
 			PropsUtil.get(Keys._DB_CLEANUP_SITE_REMOVAL_TIMEOUT),
@@ -67,6 +77,13 @@ public final class DbCleanupConstants {
 		private static final boolean _DB_CLEANUP_PATCH_CAMBIA_129_INSTALLED =
 			true;
 
+		private static final boolean
+			_DB_CLEANUP_SITE_CUSTOM_FIELD_MIGRATION_ENABLED = false;
+
+		private static final String
+			_DB_CLEANUP_SITE_CUSTOM_FIELD_MIGRATION_GROUP_IDS =
+				StringPool.BLANK;
+
 		// Time unit is 'minutes'
 		private static final long _DB_CLEANUP_SITE_REMOVAL_TIMEOUT = 45;
 
@@ -90,6 +107,14 @@ public final class DbCleanupConstants {
 
 		private static final String _DB_CLEANUP_PATCH_CAMBIA_129_INSTALLED =
 			"db.cleanup.patch.cambia.129.installed";
+
+		private static final String
+			_DB_CLEANUP_SITE_CUSTOM_FIELD_MIGRATION_ENABLED =
+				"db.cleanup.site.custom.field.migration.enabled";
+
+		private static final String
+			_DB_CLEANUP_SITE_CUSTOM_FIELD_MIGRATION_GROUP_IDS =
+				"db.cleanup.site.custom.field.migration.group.ids";
 
 		private static final String _DB_CLEANUP_SITE_REMOVAL_TIMEOUT =
 			"db.cleanup.site.removal.timeout";

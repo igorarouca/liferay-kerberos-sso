@@ -47,8 +47,10 @@ class SequentialSiteCleaner extends AbstractSiteCleaner {
 		_currentState = State.TERMINATED;
 	}
 
-	SequentialSiteCleaner(long companyId, List<String> siteNames) {
-		super(companyId, siteNames);
+	SequentialSiteCleaner(
+		long companyId, List<String> siteNames, Runnable customFieldCleaner) {
+
+		super(companyId, siteNames, customFieldCleaner);
 
 		_currentState = State.CREATED;
 	}

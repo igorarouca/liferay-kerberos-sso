@@ -1,6 +1,7 @@
 package com.cambiahealth.portal.dbcleanup.cleaner.site.impl;
 
 import com.cambiahealth.portal.dbcleanup.cleaner.site.SiteCleaner;
+
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Indexer;
@@ -147,8 +148,10 @@ class ParallelSiteCleaner extends AbstractSiteCleaner implements SiteCleaner {
 		_log.debug(">>> Shutdown thread executor");
 	}
 
-	ParallelSiteCleaner(long companyId, List<String> siteNames) {
-		super(companyId, siteNames);
+	ParallelSiteCleaner(
+		long companyId, List<String> siteNames, Runnable customFieldCleaner) {
+
+		super(companyId, siteNames, customFieldCleaner);
 
 		if (THREAD_POOL_AUTOSIZING_ENABLED) {
 			_threadExecutor = Executors.newCachedThreadPool();
