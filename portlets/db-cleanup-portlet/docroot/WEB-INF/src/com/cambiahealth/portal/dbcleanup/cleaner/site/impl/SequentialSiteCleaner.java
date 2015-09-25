@@ -1,12 +1,12 @@
 package com.cambiahealth.portal.dbcleanup.cleaner.site.impl;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.model.Group;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.model.Group;
 class SequentialSiteCleaner extends AbstractSiteCleaner {
 
 	@Override
@@ -47,10 +47,8 @@ class SequentialSiteCleaner extends AbstractSiteCleaner {
 		_currentState = State.TERMINATED;
 	}
 
-	SequentialSiteCleaner(
-		long companyId, List<String> siteNames, Runnable customFieldCleaner) {
-
-		super(companyId, siteNames, customFieldCleaner);
+	SequentialSiteCleaner(long companyId, List<String> siteNames) {
+		super(companyId, siteNames);
 
 		_currentState = State.CREATED;
 	}

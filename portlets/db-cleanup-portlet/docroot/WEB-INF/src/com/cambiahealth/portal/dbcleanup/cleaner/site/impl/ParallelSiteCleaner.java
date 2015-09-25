@@ -149,9 +149,9 @@ class ParallelSiteCleaner extends AbstractSiteCleaner implements SiteCleaner {
 	}
 
 	ParallelSiteCleaner(
-		long companyId, List<String> siteNames, Runnable customFieldCleaner) {
+		long companyId, List<String> siteNames) {
 
-		super(companyId, siteNames, customFieldCleaner);
+		super(companyId, siteNames);
 
 		if (THREAD_POOL_AUTOSIZING_ENABLED) {
 			_threadExecutor = Executors.newCachedThreadPool();

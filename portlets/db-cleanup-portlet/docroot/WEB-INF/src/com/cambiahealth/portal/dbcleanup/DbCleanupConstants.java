@@ -17,6 +17,10 @@ public final class DbCleanupConstants {
 	public static final Property CLASS_NAME_ID_QUERY_PROPERTY =
 		PropertyFactoryUtil.forName("classNameId");
 
+	public static final String[] CUSTOM_FIELDS_TO_MIGRATE = new String[] { 
+		"footer-social-media-article-id", "more-information-article-id", 
+		"primary-navigation-article-id", "primary-navigation-top-article-id" };
+
 	public static final String DANGLING_GROUP_IDS =
 		GetterUtil.getString(
 			PropsUtil.get(Keys._DB_CLEANUP_DANGLING_GROUP_IDS),

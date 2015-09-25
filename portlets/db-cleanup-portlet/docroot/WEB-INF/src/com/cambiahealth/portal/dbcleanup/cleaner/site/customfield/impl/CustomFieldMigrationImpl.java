@@ -3,7 +3,6 @@ package com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.impl;
 import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
-import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldHelper;
 import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigration;
 import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigrationException;
 import com.liferay.portal.kernel.exception.NestableException;
@@ -22,7 +21,7 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 
 	@Override
 	public boolean isNeeded() {
-		return !_customFieldHelper.hasCustomField(_customFieldName);
+		return _customFieldHelper.hasCustomField(_customFieldName);
 	}
 
 	@Override
