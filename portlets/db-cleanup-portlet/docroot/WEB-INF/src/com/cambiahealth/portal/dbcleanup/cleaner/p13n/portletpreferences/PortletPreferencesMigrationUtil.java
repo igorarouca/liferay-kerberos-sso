@@ -25,19 +25,26 @@ public class PortletPreferencesMigrationUtil {
 			portletPreferencesList =
 				PortletPreferencesLocalServiceUtil.dynamicQuery(query);
 
-		} catch (SystemException se) {
+		}
+		catch (SystemException se) {
 			_log.error(">>> Error retrieving for P13N portlet preferences", se);
 		}
 
 		if ((portletPreferencesList == null)
 			|| portletPreferencesList.isEmpty()) {
 
+			_log.info(">>> No portlet preferences to migrate");
+
 			return;
 		}
+
+		_log.info(">>> Started portlet-preferences migrations");
 
 		for (PortletPreferences portletPreferences : portletPreferencesList) {
 			migrate(companyId, portletPreferences);
 		}
+
+		_log.info(">>> Finished portlet-preferences migrations");
 	}
 
 	protected static void migrate(

@@ -97,6 +97,11 @@ public abstract class AbstractSiteCleaner implements SiteCleaner {
 			PortletPreferencesMigrationUtil
 				.migratePortletPreferences(_companyId);
 		}
+		else {
+			_log.info(
+				">>> Data migration is disabled. " +
+					"To enabled it, use 'db.cleanup.data.migration.enabled'");
+		}
 
 		return removedSites;
 	}

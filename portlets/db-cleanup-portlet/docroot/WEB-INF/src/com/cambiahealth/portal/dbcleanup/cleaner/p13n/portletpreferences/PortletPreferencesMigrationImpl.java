@@ -33,8 +33,9 @@ class PortletPreferencesMigrationImpl implements Runnable {
 			}
 		}
 		catch (Exception e) {
-			_log.error(">>> Error migrating P13N portlet preferences with ID " +
-				_portletPreferences.getPortletPreferencesId(), e);
+			_log.error(
+				">>> Error migrating P13N portlet preferences with ID " +
+					_portletPreferences.getPortletPreferencesId(), e);
 		}
 	}
 
