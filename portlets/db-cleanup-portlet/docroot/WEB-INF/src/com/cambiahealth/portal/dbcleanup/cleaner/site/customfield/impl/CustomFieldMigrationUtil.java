@@ -1,20 +1,19 @@
 package com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.impl;
 
-import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigration;
-import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigrationException;
-
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.model.GroupConstants;
+import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.SITE_CUSTOM_FIELD_MIGRATION_ENABLED;
+import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.SITE_CUSTOM_FIELD_MIGRATION_GROUP_IDS;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.SITE_CUSTOM_FIELD_MIGRATION_ENABLED;
-import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.SITE_CUSTOM_FIELD_MIGRATION_GROUP_IDS;
+import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigration;
+import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigrationException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.model.GroupConstants;
 public class CustomFieldMigrationUtil {
 
 	public static void migrate(long companyId, String[] customFields) {
@@ -25,12 +24,12 @@ public class CustomFieldMigrationUtil {
 		Set<CustomFieldMigration> migrations =
 			new HashSet<CustomFieldMigration>(customFields.length);
 
-		for (String customFieldToMigrate : customFields) {
-			migrations.add(
-				newCustomFieldMigration(companyId, customFieldToMigrate));
-		}
+		CustomFieldHelper customFieldHelper = new CustomFieldHelper(companyId);
 
-		_customFieldHelper = new CustomFieldHelper(companyId);
+		for (String customField : customFields) {
+			migrations.add(newCustomFieldMigration(
+				companyId, customField, customFieldHelper));
+		}
 
 		// In case of re-execution after failure
 		filterMigrations(migrations);
@@ -72,10 +71,11 @@ public class CustomFieldMigrationUtil {
 	}
 
 	private static CustomFieldMigrationImpl newCustomFieldMigration(
-		long companyId, String customFieldToMigrate) {
+		long companyId, String customField, 
+		CustomFieldHelper customFieldHelper) {
 
 		return new CustomFieldMigrationImpl(
-			companyId, customFieldToMigrate, _customFieldHelper);
+			companyId, customField, customFieldHelper);
 	}
 
 	private static void run(CustomFieldMigration migration) {
@@ -87,7 +87,5 @@ public class CustomFieldMigrationUtil {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 			CustomFieldMigrationUtil.class);
-
-	private static CustomFieldHelper _customFieldHelper;
 
 }
