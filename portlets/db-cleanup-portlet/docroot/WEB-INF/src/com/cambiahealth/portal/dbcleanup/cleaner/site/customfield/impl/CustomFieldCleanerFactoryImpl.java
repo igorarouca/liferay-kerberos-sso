@@ -1,11 +1,11 @@
 package com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.impl;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldCleanerFactory;
 import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldHelper;
 import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigration;
-
-import java.util.HashSet;
-import java.util.Set;
 public class CustomFieldCleanerFactoryImpl
 	implements CustomFieldCleanerFactory {
 
@@ -14,27 +14,26 @@ public class CustomFieldCleanerFactoryImpl
 
 	@Override
 	public Runnable newCustomFieldCleaner(
-		long companyId, String[][] oldFieldNewFieldNamePairs) {
+		long companyId, String[] customFieldsToMigrate) {
 
 		_customFieldHelper = new CustomFieldHelperImpl(companyId);
 
 		Set<CustomFieldMigration> migrations =
-			new HashSet<CustomFieldMigration>(oldFieldNewFieldNamePairs.length);
+			new HashSet<CustomFieldMigration>(customFieldsToMigrate.length);
 
-		for (String[] oldFieldNewFieldPair : oldFieldNewFieldNamePairs) {
+		for (String customFieldToMigrate : customFieldsToMigrate) {
 			migrations.add(
-				newCustomFieldMigration(companyId, oldFieldNewFieldPair));
+				newCustomFieldMigration(companyId, customFieldToMigrate));
 		}
 
 		return new CustomFieldCleanerImpl(migrations);
 	}
 
 	protected CustomFieldMigrationImpl newCustomFieldMigration(
-		long companyId, String[] oldFieldNewFieldPair) {
+		long companyId, String customFieldToMigrate) {
 
 		return new CustomFieldMigrationImpl(
-			companyId, oldFieldNewFieldPair[0], oldFieldNewFieldPair[1],
-			_customFieldHelper);
+			companyId, customFieldToMigrate, _customFieldHelper);
 	}
 
 	private CustomFieldHelper _customFieldHelper;
