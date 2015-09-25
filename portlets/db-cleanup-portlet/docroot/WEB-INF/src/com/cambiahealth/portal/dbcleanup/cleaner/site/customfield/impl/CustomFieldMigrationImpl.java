@@ -1,10 +1,8 @@
 package com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.impl;
 
-import java.text.MessageFormat;
-import java.util.regex.Pattern;
-
 import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigration;
 import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigrationException;
+
 import com.liferay.portal.kernel.exception.NestableException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -17,6 +15,10 @@ import com.liferay.portal.service.GroupLocalServiceUtil;
 import com.liferay.portlet.journal.NoSuchArticleException;
 import com.liferay.portlet.journal.model.JournalArticle;
 import com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil;
+
+import java.text.MessageFormat;
+
+import java.util.regex.Pattern;
 class CustomFieldMigrationImpl implements CustomFieldMigration {
 
 	@Override
@@ -33,8 +35,8 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 
 		try {
 			if ((customFieldValue != null) && !customFieldValue.isEmpty()) {
-				String[] groupPipeArticleIdStrings = 
-					StringUtil.split(customFieldValue);
+				String[] groupPipeArticleIdStrings = StringUtil.split(
+					customFieldValue);
 
 				for (String groupPipeArticleId : groupPipeArticleIdStrings) {
 					newCustomFieldValueBuilder
@@ -53,8 +55,8 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 				newCustomFieldName, newCustomFieldValue);
 
 			_log.info(MessageFormat.format(
-				_CUSTOM_FIELD_MIGRATION_SUCCESS_MESSAGE,
-				newCustomFieldName, newCustomFieldValue, getGroupId()));
+				_CUSTOM_FIELD_MIGRATION_SUCCESS_MESSAGE, newCustomFieldName,
+				newCustomFieldValue, getGroupId()));
 
 			removeOldCustomField();
 		}
@@ -68,30 +70,30 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 		}
 	}
 
-	protected String migrate(String groupPipeArticleId) 
-		throws PortalException, SystemException {
-
-		String[] groupArticleIdPair =
-			StringUtil.split(groupPipeArticleId, StringPool.PIPE);
-
-		long groupId = parse(groupArticleIdPair[0]);
-		String uuid = getArticleUuid(groupId, groupArticleIdPair[1]);
-
-		return groupArticleIdPair[0] + StringPool.PIPE + uuid;
-	}
-
 	@Override
 	public void setGroupId(long groupId) {
 		_customFieldHelper.setGroupId(groupId);
 	}
 
 	CustomFieldMigrationImpl(
-		long companyId, String customFieldToMigrate, 
+		long companyId, String customFieldToMigrate,
 		CustomFieldHelper customFieldHelper) {
 
 		_companyId = companyId;
 		_customFieldName = customFieldToMigrate;
 		_customFieldHelper = customFieldHelper;
+	}
+
+	String migrate(String groupPipeArticleId)
+		throws PortalException, SystemException {
+
+		String[] groupArticleIdPair = StringUtil.split(
+			groupPipeArticleId, StringPool.PIPE);
+
+		long groupId = parse(groupArticleIdPair[0]);
+		String uuid = getArticleUuid(groupId, groupArticleIdPair[1]);
+
+		return groupArticleIdPair[0] + StringPool.PIPE + uuid;
 	}
 
 	private String getArticleUuid(long groupId, String articleId)
@@ -118,8 +120,8 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 
 	private String getNewCustomFieldName() {
 		if (_newCustomFieldName == null) {
-			_newCustomFieldName = 
-				_articleIdPattern.matcher(_customFieldName).replaceFirst(_UUID);
+			_newCustomFieldName = _articleIdPattern.matcher(
+				_customFieldName).replaceFirst(_UUID);
 		}
 
 		return _newCustomFieldName;
@@ -151,21 +153,21 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 		}
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		CustomFieldMigrationImpl.class);
+
+	private static final Pattern _articleIdPattern = Pattern.compile(
+		"article-id");
+
 	private static final String _CUSTOM_FIELD_MIGRATION_ERROR_MESSAGE =
 		">>> Error migrating custom field {0} with value [{1}] for site [{2}]";
 
-	private static final String _CUSTOM_FIELD_MIGRATION_SUCCESS_MESSAGE = 
+	private static final String _CUSTOM_FIELD_MIGRATION_SUCCESS_MESSAGE =
 		">>> Created new custom field {0} with value [{1}] for site [{2}]";
 
 	private static final String _GLOBAL = "global";
 
 	private static final String _UUID = "uuid";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CustomFieldMigrationImpl.class);
-
-	private static final Pattern _articleIdPattern = 
-		Pattern.compile("article-id");
 
 	private long _companyId;
 	private CustomFieldHelper _customFieldHelper;

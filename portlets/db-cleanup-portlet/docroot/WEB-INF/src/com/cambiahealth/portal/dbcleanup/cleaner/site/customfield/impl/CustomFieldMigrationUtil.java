@@ -2,6 +2,7 @@ package com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.impl;
 
 import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigration;
 import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigrationException;
+
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -30,7 +31,7 @@ public class CustomFieldMigrationUtil {
 		}
 
 		_customFieldHelper = new CustomFieldHelper(companyId);
-		
+
 		// In case of re-execution after failure
 		filterMigrations(migrations);
 
@@ -52,7 +53,7 @@ public class CustomFieldMigrationUtil {
 	}
 
 	private static void filterMigrations(Set<CustomFieldMigration> migrations) {
-		Iterator<CustomFieldMigration> migrationIterator = 
+		Iterator<CustomFieldMigration> migrationIterator =
 			migrations.iterator();
 
 		while (migrationIterator.hasNext()) {
@@ -84,9 +85,9 @@ public class CustomFieldMigrationUtil {
 		}
 	}
 
-	private static CustomFieldHelper _customFieldHelper;
-
 	private static final Log _log = LogFactoryUtil.getLog(
-		CustomFieldMigrationUtil.class);
+			CustomFieldMigrationUtil.class);
+
+	private static CustomFieldHelper _customFieldHelper;
 
 }

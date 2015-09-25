@@ -1,7 +1,5 @@
 package com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.impl;
 
-import java.text.MessageFormat;
-
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -13,6 +11,8 @@ import com.liferay.portlet.expando.model.ExpandoColumnConstants;
 import com.liferay.portlet.expando.model.ExpandoTableConstants;
 import com.liferay.portlet.expando.service.ExpandoColumnLocalServiceUtil;
 import com.liferay.portlet.expando.util.ExpandoBridgeFactoryUtil;
+
+import java.text.MessageFormat;
 class CustomFieldHelper {
 
 	CustomFieldHelper(long companyId) {
@@ -65,10 +65,10 @@ class CustomFieldHelper {
 			ExpandoTableConstants.DEFAULT_TABLE_NAME, name);
 	}
 
-	private static final String _GROUP_CLASS_NAME = Group.class.getName();
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		CustomFieldHelper.class);
+
+	private static final String _GROUP_CLASS_NAME = Group.class.getName();
 
 	private ExpandoBridge _expandoBridge;
 
