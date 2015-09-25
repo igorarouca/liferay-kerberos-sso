@@ -2,6 +2,7 @@ package com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.impl;
 
 import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigration;
 import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigrationException;
+import com.cambiahealth.portal.dbcleanup.util.ArticleIdUuidConverter;
 
 import com.liferay.portal.kernel.exception.NestableException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -9,12 +10,6 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.service.CompanyLocalServiceUtil;
-import com.liferay.portal.service.GroupLocalServiceUtil;
-import com.liferay.portlet.journal.NoSuchArticleException;
-import com.liferay.portlet.journal.model.JournalArticle;
-import com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil;
 
 import java.util.regex.Pattern;
 class CustomFieldMigrationImpl implements CustomFieldMigration {
@@ -39,22 +34,9 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 
 		try {
 			if ((customFieldValue != null) && !customFieldValue.isEmpty()) {
-				StringBuilder newCustomFieldValueBuilder = new StringBuilder();
-
-				String[] groupPipeArticleIdStrings = StringUtil.split(
-					customFieldValue);
-
-				for (String groupPipeArticleId : groupPipeArticleIdStrings) {
-					newCustomFieldValueBuilder
-						.append(migrate(groupPipeArticleId))
-						.append(StringPool.COMMA);
-				}
-
-				// Remove extra commna at the end
-				newCustomFieldValueBuilder.setLength(
-					newCustomFieldValueBuilder.length() - 1);
-
-				newCustomFieldValue = newCustomFieldValueBuilder.toString();
+				newCustomFieldValue =
+					ArticleIdUuidConverter.convertCommaSeparatedList(
+						_companyId, customFieldValue);
 			}
 
 			String newCustomFieldName = getNewCustomFieldName();
@@ -89,36 +71,6 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 		_customFieldHelper = customFieldHelper;
 	}
 
-	String migrate(String groupPipeArticleId)
-		throws PortalException, SystemException {
-
-		String[] groupArticleIdPair = StringUtil.split(
-			groupPipeArticleId, StringPool.PIPE);
-
-		long groupId = parse(groupArticleIdPair[0]);
-		String uuid = getArticleUuid(groupId, groupArticleIdPair[1]);
-
-		return groupArticleIdPair[0] + StringPool.PIPE + uuid;
-	}
-
-	private String getArticleUuid(long groupId, String articleId)
-		throws PortalException, SystemException {
-
-		try {
-			JournalArticle article = JournalArticleLocalServiceUtil.getArticle(
-				groupId, articleId);
-
-			return article.getUuid();
-		}
-		catch (NoSuchArticleException nsae) {
-			_log.error(
-				">>> Error retrieving article with ID " + articleId
-					+ " for site " + groupId);
-
-			throw nsae;
-		}
-	}
-
 	private long getGroupId() {
 		return _customFieldHelper.getGroupId();
 	}
@@ -130,19 +82,6 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 		}
 
 		return _newCustomFieldName;
-	}
-
-	private long parse(String groupString)
-		throws PortalException, SystemException {
-
-		if (groupString.equals(_GLOBAL)) {
-			return CompanyLocalServiceUtil.getCompany(
-				_companyId).getGroup().getGroupId();
-		}
-		else {
-			return GroupLocalServiceUtil.getFriendlyURLGroup(
-				_companyId, groupString).getGroupId();
-		}
 	}
 
 	private void removeOldCustomField() throws NestableException {
@@ -169,8 +108,6 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 
 	private static final Pattern _articleIdPattern = Pattern.compile(
 		"article-id");
-
-	private static final String _GLOBAL = "global";
 
 	private static final String _UUID = "uuid";
 
