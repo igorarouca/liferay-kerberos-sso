@@ -17,24 +17,21 @@ public class ArticleIdUuidConverter {
 			long companyId, String groupPipeArticleIdList)
 		throws PortalException, SystemException {
 
-		String newCustomFieldValue;
-		StringBuilder newCustomFieldValueBuilder = new StringBuilder();
+		StringBuilder groupPipeUuidList = new StringBuilder();
 
 		String[] groupPipeArticleIdStrings = StringUtil.split(
 			groupPipeArticleIdList);
 
 		for (String groupPipeArticleId : groupPipeArticleIdStrings) {
-			newCustomFieldValueBuilder
+			groupPipeUuidList
 				.append(convertPipedString(companyId, groupPipeArticleId))
 				.append(StringPool.COMMA);
 		}
 
 		// Remove extra commna at the end
-		newCustomFieldValueBuilder.setLength(
-			newCustomFieldValueBuilder.length() - 1);
+		groupPipeUuidList.setLength(groupPipeUuidList.length() - 1);
 
-		newCustomFieldValue = newCustomFieldValueBuilder.toString();
-		return newCustomFieldValue;
+		return groupPipeUuidList.toString();
 	}
 
 	public static String convertPipedString(
@@ -44,13 +41,10 @@ public class ArticleIdUuidConverter {
 		String[] groupArticleIdPair = StringUtil.split(
 			groupPipeArticleId, StringPool.PIPE);
 
-		String groupString = groupArticleIdPair[0];
-		String articleId = groupArticleIdPair[1];
+		long groupId = getGroupId(companyId, groupArticleIdPair[0]);
+		String uuid = getArticleUuid(groupId, groupArticleIdPair[1]);
 
-		long groupId = getGroupId(companyId, groupString);
-		String uuid = getArticleUuid(groupId, articleId);
-
-		return groupString + StringPool.PIPE + uuid;
+		return groupArticleIdPair[0] + StringPool.PIPE + uuid;
 	}
 
 	private static String getArticleUuid(long groupId, String articleId)
@@ -74,13 +68,19 @@ public class ArticleIdUuidConverter {
 	private static long getGroupId(long companyId, String groupString)
 		throws PortalException, SystemException {
 
-		if (groupString.equals(_GLOBAL)) {
-			return CompanyLocalServiceUtil.getCompany(
-				companyId).getGroup().getGroupId();
+		try {
+			if (groupString.equals(_GLOBAL)) {
+				return CompanyLocalServiceUtil.getCompany(
+					companyId).getGroup().getGroupId();
+			}
+			else {
+				return GroupLocalServiceUtil.getFriendlyURLGroup(
+					companyId, groupString).getGroupId();
+			}
 		}
-		else {
-			return GroupLocalServiceUtil.getFriendlyURLGroup(
-				companyId, groupString).getGroupId();
+		catch (PortalException | SystemException e) {
+			_log.error(">>> Error retrieving group ID for " + groupString);
+			throw e;
 		}
 	}
 
