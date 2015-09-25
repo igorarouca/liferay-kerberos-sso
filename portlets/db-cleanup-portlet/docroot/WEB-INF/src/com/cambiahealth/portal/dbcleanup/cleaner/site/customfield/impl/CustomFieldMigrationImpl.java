@@ -16,8 +16,6 @@ import com.liferay.portlet.journal.NoSuchArticleException;
 import com.liferay.portlet.journal.model.JournalArticle;
 import com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil;
 
-import java.text.MessageFormat;
-
 import java.util.regex.Pattern;
 class CustomFieldMigrationImpl implements CustomFieldMigration {
 
@@ -28,12 +26,14 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 
 	@Override
 	public void run() throws CustomFieldMigrationException {
-		_log.info(MessageFormat.format(
-			">>> Started migration of {0} for site [{1}]", _customFieldName,
-			getGroupId()));
-
 		String customFieldValue = (String)
 			_customFieldHelper.getCustomFieldValue(_customFieldName);
+
+		if (_log.isInfoEnabled()) {
+			_log.info(
+				">>> Started migration of " + _customFieldName + " with value ["
+					+ customFieldValue + "] for site " + getGroupId());
+		}
 
 		String newCustomFieldValue = StringPool.BLANK;
 
@@ -63,16 +63,13 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 				newCustomFieldName, newCustomFieldValue);
 
 			removeOldCustomField();
-
-			_log.info(MessageFormat.format(
-				_CUSTOM_FIELD_MIGRATION_SUCCESS_MESSAGE, newCustomFieldName,
-				newCustomFieldValue, getGroupId()));
 		}
 
 		catch(Exception e) {
-			_log.error(MessageFormat.format(
-				_CUSTOM_FIELD_MIGRATION_ERROR_MESSAGE, _customFieldName,
-				customFieldValue, getGroupId()));
+			_log.error(
+				">>> Error migrating custom field " + _customFieldName
+					+ " with value [" + customFieldValue + "] for site "
+						+ getGroupId());
 
 			throw new CustomFieldMigrationException(e);
 		}
@@ -114,9 +111,9 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 			return article.getUuid();
 		}
 		catch (NoSuchArticleException nsae) {
-			_log.error(MessageFormat.format(
-				">>> Error retrieving article with ID {0} for site {1}",
-				articleId, groupId));
+			_log.error(
+				">>> Error retrieving article with ID " + articleId
+					+ " for site " + groupId);
 
 			throw nsae;
 		}
@@ -152,14 +149,16 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 		try {
 			_customFieldHelper.removeCustomField(_customFieldName);
 
-			_log.info(MessageFormat.format(
-				">>> Removed old custom field {0} for site {1}",
-					_customFieldName, getGroupId()));
+			if (_log.isInfoEnabled()) {
+				_log.info(
+					">>> Removed old custom field " + _customFieldName
+						+ " for site " + getGroupId());
+			}
 		}
 		catch (PortalException | SystemException e) {
-			_log.error(MessageFormat.format(
-				">>> Error removing old custom field {0} for site {1}",
-				_customFieldName, getGroupId()));
+			_log.error(
+				">>> Error removing old custom field " + _customFieldName
+					+ " for site " + getGroupId());
 
 			throw e;
 		}
@@ -170,12 +169,6 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 
 	private static final Pattern _articleIdPattern = Pattern.compile(
 		"article-id");
-
-	private static final String _CUSTOM_FIELD_MIGRATION_ERROR_MESSAGE =
-		">>> Error migrating custom field {0} with value [{1}] for site [{2}]";
-
-	private static final String _CUSTOM_FIELD_MIGRATION_SUCCESS_MESSAGE =
-		">>> Created new custom field {0} with value [{1}] for site [{2}]";
 
 	private static final String _GLOBAL = "global";
 

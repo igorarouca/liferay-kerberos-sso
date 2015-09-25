@@ -11,8 +11,6 @@ import com.liferay.portlet.expando.model.ExpandoColumnConstants;
 import com.liferay.portlet.expando.model.ExpandoTableConstants;
 import com.liferay.portlet.expando.service.ExpandoColumnLocalServiceUtil;
 import com.liferay.portlet.expando.util.ExpandoBridgeFactoryUtil;
-
-import java.text.MessageFormat;
 class CustomFieldHelper {
 
 	CustomFieldHelper(long companyId) {
@@ -36,13 +34,19 @@ class CustomFieldHelper {
 				addCustomField(name);
 			}
 			catch (PortalException pe) {
-				_log.error(MessageFormat.format(
-					">>> Error creating new custom field {0} for site {1}",
-						name, _expandoBridge.getClassPK()));
+				_log.error(
+					">>> Error creating new custom field " + name
+						+ " for site " + _expandoBridge.getClassPK());
 			}
 		}
 
 		_expandoBridge.setAttribute(name, value);
+
+		if (_log.isInfoEnabled() && (value != null) && !value.isEmpty()) {
+			_log.info(
+				">>> Created new custom field " + name + " with value ["
+					+ value + "] for site " + _expandoBridge.getClassPK());
+		}
 	}
 
 	long getGroupId() {

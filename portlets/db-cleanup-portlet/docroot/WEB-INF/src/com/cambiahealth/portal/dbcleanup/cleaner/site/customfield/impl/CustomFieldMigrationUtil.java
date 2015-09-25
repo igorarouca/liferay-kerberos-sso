@@ -40,6 +40,8 @@ public class CustomFieldMigrationUtil {
 		}
 
 		try {
+			_log.info(">>> Started custom-field migrations");
+
 			for (CustomFieldMigration migration : migrations) {
 				run(migration);
 			}
@@ -49,6 +51,8 @@ public class CustomFieldMigrationUtil {
 		}
 		finally {
 			migrations.clear();
+
+			_log.info(">>> Finished custom-field migrations");
 		}
 	}
 
