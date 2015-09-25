@@ -35,10 +35,12 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 		String customFieldValue = (String)
 			_customFieldHelper.getCustomFieldValue(_customFieldName);
 
-		StringBuilder newCustomFieldValueBuilder = new StringBuilder();
+		String newCustomFieldValue = StringPool.BLANK;
 
 		try {
 			if ((customFieldValue != null) && !customFieldValue.isEmpty()) {
+				StringBuilder newCustomFieldValueBuilder = new StringBuilder();
+
 				String[] groupPipeArticleIdStrings = StringUtil.split(
 					customFieldValue);
 
@@ -47,13 +49,15 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 						.append(migrate(groupPipeArticleId))
 						.append(StringPool.COMMA);
 				}
+
+				// Remove extra commna at the end
+				newCustomFieldValueBuilder.setLength(
+					newCustomFieldValueBuilder.length() - 1);
+
+				newCustomFieldValue = newCustomFieldValueBuilder.toString();
 			}
 
-			newCustomFieldValueBuilder.setLength(
-				newCustomFieldValueBuilder.length() - 1);
-
 			String newCustomFieldName = getNewCustomFieldName();
-			String newCustomFieldValue = newCustomFieldValueBuilder.toString();
 
 			_customFieldHelper.setCustomFieldValue(
 				newCustomFieldName, newCustomFieldValue);
