@@ -1,6 +1,7 @@
 package com.cambiahealth.portal.dbcleanup.cleaner.site.impl;
 
 import com.cambiahealth.portal.dbcleanup.cleaner.CorruptedDataCleanerUtil;
+import com.cambiahealth.portal.dbcleanup.cleaner.p13n.portletpreferences.PortletPreferencesMigrationUtil;
 import com.cambiahealth.portal.dbcleanup.cleaner.site.SiteCleaner;
 import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.impl.CustomFieldMigrationUtil;
 import com.cambiahealth.portal.dbcleanup.service.CorruptedLayoutLocalServiceUtil;
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.BULK_REINDEX_ENABLED;
 import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.CUSTOM_FIELDS_TO_MIGRATE;
+import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.DATA_MIGRATION_ENABLED;
 import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.PATCH_CAMBIA_129_INSTALLED;
 import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.REGENCE_PRODUCER_OR;
 public abstract class AbstractSiteCleaner implements SiteCleaner {
@@ -88,7 +90,13 @@ public abstract class AbstractSiteCleaner implements SiteCleaner {
 
 		cleanOrphanData(removedSites);
 
-		CustomFieldMigrationUtil.migrate(_companyId, CUSTOM_FIELDS_TO_MIGRATE);
+		if (DATA_MIGRATION_ENABLED) {
+			CustomFieldMigrationUtil
+				.migrate(_companyId, CUSTOM_FIELDS_TO_MIGRATE);
+
+			PortletPreferencesMigrationUtil
+				.migratePortletPreferences(_companyId);
+		}
 
 		return removedSites;
 	}

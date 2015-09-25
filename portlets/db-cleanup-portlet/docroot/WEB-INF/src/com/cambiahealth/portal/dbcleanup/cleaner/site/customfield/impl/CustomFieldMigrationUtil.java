@@ -12,15 +12,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.SITE_CUSTOM_FIELD_MIGRATION_ENABLED;
 import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.SITE_CUSTOM_FIELD_MIGRATION_GROUP_IDS;
 public class CustomFieldMigrationUtil {
 
 	public static void migrate(long companyId, String[] customFields) {
-		if (!SITE_CUSTOM_FIELD_MIGRATION_ENABLED) {
-			return;
-		}
-
 		Set<CustomFieldMigration> migrations =
 			new HashSet<CustomFieldMigration>(customFields.length);
 

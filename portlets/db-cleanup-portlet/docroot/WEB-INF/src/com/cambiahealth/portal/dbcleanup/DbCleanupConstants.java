@@ -23,6 +23,11 @@ public final class DbCleanupConstants {
 			PropsUtil.get(Keys._DB_CLEANUP_DANGLING_GROUP_IDS),
 			Defaults._DB_CLEANUP_DANGLING_GROUP_IDS);
 
+	public static final boolean DATA_MIGRATION_ENABLED =
+		GetterUtil.getBoolean(
+			PropsUtil.get(Keys._DB_CLEANUP_DATA_MIGRATION_ENABLED),
+			Defaults._DB_CLEANUP_DATA_MIGRATION_ENABLED);
+
 	public static final Property GROUP_ID_QUERY_PROPERTY =
 		PropertyFactoryUtil.forName("groupId");
 
@@ -40,11 +45,6 @@ public final class DbCleanupConstants {
 			Defaults._DB_CLEANUP_PATCH_CAMBIA_129_INSTALLED);
 
 	public static final String REGENCE_PRODUCER_OR = "regence_producer_or";
-
-	public static final boolean SITE_CUSTOM_FIELD_MIGRATION_ENABLED =
-		GetterUtil.getBoolean(
-			PropsUtil.get(Keys._DB_CLEANUP_SITE_CUSTOM_FIELD_MIGRATION_ENABLED),
-			Defaults._DB_CLEANUP_SITE_CUSTOM_FIELD_MIGRATION_ENABLED);
 
 	public static final String SITE_CUSTOM_FIELD_MIGRATION_GROUP_IDS =
 		GetterUtil.getString(PropsUtil.get(
@@ -72,14 +72,13 @@ public final class DbCleanupConstants {
 		private static final String _DB_CLEANUP_DANGLING_GROUP_IDS =
 			StringPool.BLANK;
 
+		private static final boolean _DB_CLEANUP_DATA_MIGRATION_ENABLED = false;
+
 		private static final boolean _DB_CLEANUP_PARALLEL_EXECUTION_ENABLED =
 			false;
 
 		private static final boolean _DB_CLEANUP_PATCH_CAMBIA_129_INSTALLED =
 			true;
-
-		private static final boolean
-			_DB_CLEANUP_SITE_CUSTOM_FIELD_MIGRATION_ENABLED = false;
 
 		private static final String
 			_DB_CLEANUP_SITE_CUSTOM_FIELD_MIGRATION_GROUP_IDS =
@@ -103,15 +102,14 @@ public final class DbCleanupConstants {
 		private static final String _DB_CLEANUP_DANGLING_GROUP_IDS =
 			"db.cleanup.dangling.group.ids";
 
+		private static final String _DB_CLEANUP_DATA_MIGRATION_ENABLED =
+			"db.cleanup.data.migration.enabled";
+
 		private static final String _DB_CLEANUP_PARALLEL_EXECUTION_ENABLED =
 			"db.cleanup.parallel.execution.enabled";
 
 		private static final String _DB_CLEANUP_PATCH_CAMBIA_129_INSTALLED =
 			"db.cleanup.patch.cambia.129.installed";
-
-		private static final String
-			_DB_CLEANUP_SITE_CUSTOM_FIELD_MIGRATION_ENABLED =
-				"db.cleanup.site.custom.field.migration.enabled";
 
 		private static final String
 			_DB_CLEANUP_SITE_CUSTOM_FIELD_MIGRATION_GROUP_IDS =
