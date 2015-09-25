@@ -1,18 +1,19 @@
 package com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.impl;
 
-import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.SITE_CUSTOM_FIELD_MIGRATION_ENABLED;
-import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.SITE_CUSTOM_FIELD_MIGRATION_GROUP_IDS;
+import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigration;
+import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigrationException;
+
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.model.GroupConstants;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigration;
-import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigrationException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.model.GroupConstants;
+import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.SITE_CUSTOM_FIELD_MIGRATION_ENABLED;
+import static com.cambiahealth.portal.dbcleanup.DbCleanupConstants.SITE_CUSTOM_FIELD_MIGRATION_GROUP_IDS;
 public class CustomFieldMigrationUtil {
 
 	public static void migrate(long companyId, String[] customFields) {
@@ -34,6 +35,7 @@ public class CustomFieldMigrationUtil {
 		filterMigrations(migrations);
 
 		if (migrations.isEmpty()) {
+			_log.info(">>> No custom fields to migrate");
 			return;
 		}
 
@@ -70,7 +72,7 @@ public class CustomFieldMigrationUtil {
 	}
 
 	private static CustomFieldMigrationImpl newCustomFieldMigration(
-		long companyId, String customField, 
+		long companyId, String customField,
 		CustomFieldHelper customFieldHelper) {
 
 		return new CustomFieldMigrationImpl(

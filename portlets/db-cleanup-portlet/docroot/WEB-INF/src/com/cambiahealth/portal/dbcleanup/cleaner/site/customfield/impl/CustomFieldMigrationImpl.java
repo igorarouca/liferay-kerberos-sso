@@ -28,6 +28,10 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 
 	@Override
 	public void run() throws CustomFieldMigrationException {
+		_log.info(MessageFormat.format(
+			">>> Started migration of {0} for site [{1}]", _customFieldName,
+			getGroupId()));
+
 		String customFieldValue = (String)
 			_customFieldHelper.getCustomFieldValue(_customFieldName);
 
@@ -54,11 +58,11 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 			_customFieldHelper.setCustomFieldValue(
 				newCustomFieldName, newCustomFieldValue);
 
+			removeOldCustomField();
+
 			_log.info(MessageFormat.format(
 				_CUSTOM_FIELD_MIGRATION_SUCCESS_MESSAGE, newCustomFieldName,
 				newCustomFieldValue, getGroupId()));
-
-			removeOldCustomField();
 		}
 
 		catch(Exception e) {
@@ -143,6 +147,10 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 	private void removeOldCustomField() throws NestableException {
 		try {
 			_customFieldHelper.removeCustomField(_customFieldName);
+
+			_log.info(MessageFormat.format(
+				">>> Removed old custom field {0} for site {1}",
+					_customFieldName, getGroupId()));
 		}
 		catch (PortalException | SystemException e) {
 			_log.error(MessageFormat.format(
