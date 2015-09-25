@@ -11,7 +11,6 @@ import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMig
 import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigrationException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.model.GroupConstants;
 public class CustomFieldMigrationUtil {
@@ -66,7 +65,7 @@ public class CustomFieldMigrationUtil {
 
 	private static long[] getSiteGroupIdsToMigrate() {
 		return StringUtil.split(
-			PropsUtil.get(SITE_CUSTOM_FIELD_MIGRATION_GROUP_IDS),
+			SITE_CUSTOM_FIELD_MIGRATION_GROUP_IDS,
 			GroupConstants.DEFAULT_LIVE_GROUP_ID);
 	}
 
