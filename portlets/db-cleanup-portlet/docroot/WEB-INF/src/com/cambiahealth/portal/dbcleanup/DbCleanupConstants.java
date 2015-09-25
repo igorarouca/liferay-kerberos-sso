@@ -14,9 +14,6 @@ public final class DbCleanupConstants {
 			PropsUtil.get(Keys._DB_CLEANUP_BULK_REINDEX_ENABLED),
 			Defaults._DB_CLEANUP_BULK_REINDEX_ENABLED);
 
-	public static final Property CLASS_NAME_ID_QUERY_PROPERTY =
-		PropertyFactoryUtil.forName("classNameId");
-
 	public static final String[] CUSTOM_FIELDS_TO_MIGRATE = new String[] {
 		"footer-social-media-article-id", "more-information-article-id",
 		"primary-navigation-article-id", "primary-navigation-top-article-id" };
