@@ -79,10 +79,14 @@ public class CustomFieldMigrationUtil {
 	}
 
 	private static void run(CustomFieldMigration migration) {
+
 		for (long groupId : getSiteGroupIdsToMigrate()) {
 			migration.setGroupId(groupId);
 			migration.run();
 		}
+
+		// After migrating same custom field for all sites, it can be removed
+		migration.removeOldCustomField();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

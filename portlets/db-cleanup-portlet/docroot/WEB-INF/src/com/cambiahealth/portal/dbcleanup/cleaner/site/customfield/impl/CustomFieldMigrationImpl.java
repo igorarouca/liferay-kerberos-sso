@@ -4,7 +4,6 @@ import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMig
 import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigrationException;
 import com.cambiahealth.portal.dbcleanup.util.ArticleIdUuidConverter;
 
-import com.liferay.portal.kernel.exception.NestableException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -17,6 +16,21 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 	@Override
 	public boolean isNeeded() {
 		return _customFieldHelper.hasCustomField(_customFieldName);
+	}
+
+	@Override
+	public void removeOldCustomField() {
+		try {
+			_customFieldHelper.removeCustomField(_customFieldName);
+
+			if (_log.isInfoEnabled()) {
+				_log.info(">>> Removed old custom field " + _customFieldName);
+			}
+		}
+		catch (PortalException | SystemException e) {
+			_log.error(
+				">>> Error removing old custom field " + _customFieldName, e);
+		}
 	}
 
 	@Override
@@ -43,8 +57,6 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 
 			_customFieldHelper.setCustomFieldValue(
 				newCustomFieldName, newCustomFieldValue);
-
-			removeOldCustomField();
 		}
 
 		catch(Exception e) {
@@ -82,25 +94,6 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 		}
 
 		return _newCustomFieldName;
-	}
-
-	private void removeOldCustomField() throws NestableException {
-		try {
-			_customFieldHelper.removeCustomField(_customFieldName);
-
-			if (_log.isInfoEnabled()) {
-				_log.info(
-					">>> Removed old custom field " + _customFieldName
-						+ " for site " + getGroupId());
-			}
-		}
-		catch (PortalException | SystemException e) {
-			_log.error(
-				">>> Error removing old custom field " + _customFieldName
-					+ " for site " + getGroupId());
-
-			throw e;
-		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
