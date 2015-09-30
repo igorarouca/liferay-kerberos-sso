@@ -1,7 +1,6 @@
 package com.cambiahealth.portal.dbcleanup.cleaner.p13n.portletpreferences;
 
 import com.cambiahealth.portal.dbcleanup.util.ArticleIdUuidConverter;
-
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -35,7 +34,7 @@ class PortletPreferencesMigrationImpl implements Runnable {
 		catch (Exception e) {
 			_log.error(
 				">>> Error migrating P13N portlet preferences with ID " +
-					_portletPreferences.getPortletPreferencesId(), e);
+					_portletPreferences.getPortletPreferencesId());
 		}
 	}
 
