@@ -11,27 +11,28 @@ import com.liferay.portal.service.GroupLocalServiceUtil;
 import com.liferay.portlet.journal.NoSuchArticleException;
 import com.liferay.portlet.journal.model.JournalArticle;
 import com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil;
-public class ArticleIdUuidConverter {
+public class ArticleIdResourceUuidConverter {
 
 	public static String convertCommaSeparatedList(
 			long companyId, String groupPipeArticleIdList)
 		throws PortalException, SystemException {
 
-		StringBuilder groupPipeUuidList = new StringBuilder();
+		StringBuilder groupPipeResourceUuidList = new StringBuilder();
 
 		String[] groupPipeArticleIdStrings = StringUtil.split(
 			groupPipeArticleIdList);
 
 		for (String groupPipeArticleId : groupPipeArticleIdStrings) {
-			groupPipeUuidList
+			groupPipeResourceUuidList
 				.append(convertPipedString(companyId, groupPipeArticleId))
 				.append(StringPool.COMMA);
 		}
 
 		// Remove extra commna at the end
-		groupPipeUuidList.setLength(groupPipeUuidList.length() - 1);
+		groupPipeResourceUuidList.setLength(
+			groupPipeResourceUuidList.length() - 1);
 
-		return groupPipeUuidList.toString();
+		return groupPipeResourceUuidList.toString();
 	}
 
 	public static String convertPipedString(
@@ -42,19 +43,20 @@ public class ArticleIdUuidConverter {
 			groupPipeArticleId, StringPool.PIPE);
 
 		long groupId = getGroupId(companyId, groupArticleIdPair[0]);
-		String uuid = getArticleUuid(groupId, groupArticleIdPair[1]);
+		String resourceUUID = getArticleResourceUuid(
+			groupId, groupArticleIdPair[1]);
 
-		return groupArticleIdPair[0] + StringPool.PIPE + uuid;
+		return groupArticleIdPair[0] + StringPool.PIPE + resourceUUID;
 	}
 
-	private static String getArticleUuid(long groupId, String articleId)
+	private static String getArticleResourceUuid(long groupId, String articleId)
 		throws PortalException, SystemException {
 
 		try {
 			JournalArticle article = JournalArticleLocalServiceUtil.getArticle(
 				groupId, articleId);
 
-			return article.getUuid();
+			return article.getArticleResourceUuid();
 		}
 		catch (NoSuchArticleException nsae) {
 			_log.error(
@@ -84,11 +86,11 @@ public class ArticleIdUuidConverter {
 		}
 	}
 
-	private ArticleIdUuidConverter() {
+	private ArticleIdResourceUuidConverter() {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		ArticleIdUuidConverter.class);
+		ArticleIdResourceUuidConverter.class);
 
 	private static final String _GLOBAL = "global";
 

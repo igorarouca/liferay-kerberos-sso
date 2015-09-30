@@ -2,7 +2,7 @@ package com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.impl;
 
 import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigration;
 import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.CustomFieldMigrationException;
-import com.cambiahealth.portal.dbcleanup.util.ArticleIdUuidConverter;
+import com.cambiahealth.portal.dbcleanup.util.ArticleIdResourceUuidConverter;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -49,7 +49,7 @@ class CustomFieldMigrationImpl implements CustomFieldMigration {
 		try {
 			if ((customFieldValue != null) && !customFieldValue.isEmpty()) {
 				newCustomFieldValue =
-					ArticleIdUuidConverter.convertCommaSeparatedList(
+					ArticleIdResourceUuidConverter.convertCommaSeparatedList(
 						_companyId, customFieldValue);
 			}
 
