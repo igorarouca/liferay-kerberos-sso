@@ -50,8 +50,8 @@ public class PortletPreferencesMigrationUtil {
 	protected static void migrate(
 		long companyId, PortletPreferences portletPreferences) {
 
-		PortletPreferencesMigrationImpl migration =
-			new PortletPreferencesMigrationImpl(companyId, portletPreferences);
+		Runnable migration = new PortletPreferencesMigrationImpl(
+			companyId, portletPreferences);
 
 		try {
 			migration.run();

@@ -1,6 +1,7 @@
 package com.cambiahealth.portal.dbcleanup.cleaner.p13n.portletpreferences;
 
 import com.cambiahealth.portal.dbcleanup.util.ArticleIdResourceUuidConverter;
+
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -52,7 +53,7 @@ class PortletPreferencesMigrationImpl implements Runnable {
 			new String[groupPipeArticleIdStrings.length];
 
 		for (int i = 0; i < groupPipeArticleIdStrings.length; ++i) {
-			groupPipeUuidStrings[i] = 
+			groupPipeUuidStrings[i] =
 				ArticleIdResourceUuidConverter.convertPipedString(
 					_companyId, groupPipeArticleIdStrings[i]);
 		}
