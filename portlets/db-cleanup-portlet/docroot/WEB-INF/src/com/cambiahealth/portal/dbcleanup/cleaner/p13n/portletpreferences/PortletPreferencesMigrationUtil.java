@@ -27,7 +27,7 @@ public class PortletPreferencesMigrationUtil {
 
 		}
 		catch (SystemException se) {
-			_log.error(">>> Error retrieving for P13N portlet preferences", se);
+			_log.error(">>> Error retrieving P13N portlet preferences", se);
 		}
 
 		if ((portletPreferencesList == null)
