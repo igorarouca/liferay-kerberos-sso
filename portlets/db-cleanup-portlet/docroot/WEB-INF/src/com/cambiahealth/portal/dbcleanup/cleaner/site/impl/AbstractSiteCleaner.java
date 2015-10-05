@@ -1,6 +1,7 @@
 package com.cambiahealth.portal.dbcleanup.cleaner.site.impl;
 
 import com.cambiahealth.portal.dbcleanup.cleaner.CorruptedDataCleanerUtil;
+import com.cambiahealth.portal.dbcleanup.cleaner.articles.JournalArticleMigrationUtil;
 import com.cambiahealth.portal.dbcleanup.cleaner.p13n.portletpreferences.PortletPreferencesMigrationUtil;
 import com.cambiahealth.portal.dbcleanup.cleaner.site.SiteCleaner;
 import com.cambiahealth.portal.dbcleanup.cleaner.site.customfield.impl.CustomFieldMigrationUtil;
@@ -96,6 +97,8 @@ public abstract class AbstractSiteCleaner implements SiteCleaner {
 
 			PortletPreferencesMigrationUtil
 				.migratePortletPreferences(_companyId);
+
+			JournalArticleMigrationUtil.migrateJournalArticles(_companyId);
 		}
 		else {
 			_log.info(
