@@ -1,1 +1,0 @@
-Liferay.Service.register("Liferay.Service.", "com.cambiahealth.portal.hook.service", "journal-uuid-hook");
