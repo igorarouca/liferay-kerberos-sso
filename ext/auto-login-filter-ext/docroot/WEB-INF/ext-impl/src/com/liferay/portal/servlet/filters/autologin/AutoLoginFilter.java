@@ -183,14 +183,36 @@ public class AutoLoginFilter extends BasePortalFilter {
 			return;
 		}
 
-		String remoteUser = request.getRemoteUser();
-		String jUserName = (String)session.getAttribute(_J_USERNAME);
+		/* --- Customization ---
+		 *
+		 * AutoLogin classes should be executed in either of these conditions:
+		 *
+		 * 1) REMOTE_USER is null (default behavior)
+		 * 2) Kerberos authentication is being used (customization)
+		 *
+		 * When using Kerberos, the REMOTE_USER will not be null, as the user
+		 * was already authenticated before the request is forwarded to the
+		 * portal, but we still want to run the KerberosAutoLogin.
+		 *
+		 */
+		if (!PropsValues.AUTH_LOGIN_DISABLED || 
+			hasReachedConcurrentUserLimit()) {
 
-		if (!(PropsValues.AUTH_LOGIN_DISABLED ||
-			hasReachedConcurrentUserLimit()) &&
-			(remoteUser == null) && (jUserName == null)) {
+			String remoteUser = request.getRemoteUser();
+			String jUserName = (String)session.getAttribute(_J_USERNAME);
 
 			for (AutoLogin autoLogin : _autoLogins) {
+				/* --- Customization starts here --- */
+				boolean kerberosAutoLogin =
+					autoLogin.toString().equals(_KERBEROS_AUTO_LOGIN);
+
+				if (((remoteUser != null) || (jUserName != null))
+					&& !kerberosAutoLogin) {
+
+					continue;
+				}
+				/* --- Customization finishes here --- */
+
 				try {
 					String[] credentials = autoLogin.login(request, response);
 
@@ -260,6 +282,8 @@ public class AutoLoginFilter extends BasePortalFilter {
 	private static final String _J_REMOTEUSER = "j_remoteuser";
 
 	private static final String _J_USERNAME = "j_username";
+
+	private static final String _KERBEROS_AUTO_LOGIN = "KerberosAutoLogin";
 
 	private static final String _MAX_CONCURRENT_USERS = "maxConcurrentUsers";
 
