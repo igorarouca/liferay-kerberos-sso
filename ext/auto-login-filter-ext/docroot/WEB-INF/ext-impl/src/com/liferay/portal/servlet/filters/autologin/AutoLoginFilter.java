@@ -22,6 +22,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.InstancePool;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.license.LicenseManager;
+import com.liferay.portal.liveusers.LiveUsers;
 import com.liferay.portal.model.User;
 import com.liferay.portal.security.auth.AutoLogin;
 import com.liferay.portal.security.pwd.PwdEncryptor;
@@ -34,6 +36,7 @@ import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.WebKeys;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.FilterChain;
@@ -125,6 +128,19 @@ public class AutoLoginFilter extends BasePortalFilter {
 		return jUsername;
 	}
 
+	protected boolean hasReachedConcurrentUserLimit() {
+		Map<String, String> licenseProperties =
+			LicenseManager.getLicenseProperties(
+				LicenseManager.PRODUCT_ID_PORTAL);
+
+		int maxConcurrentUsersCount = GetterUtil.getInteger(
+			licenseProperties.get("maxConcurrentUsers"));
+
+		return (maxConcurrentUsersCount > 0) &&
+			!PropsValues.LIVE_USERS_ENABLED &&
+				(LiveUsers.getUserIdsCount() >= maxConcurrentUsersCount);
+	}
+
 	@Override
 	protected void processFilter(
 			HttpServletRequest request, HttpServletResponse response,
@@ -170,14 +186,8 @@ public class AutoLoginFilter extends BasePortalFilter {
 		String remoteUser = request.getRemoteUser();
 		String jUserName = (String)session.getAttribute("j_username");
 
-		java.util.Map<String, String> licenseProperties =
-			com.liferay.portal.license.LicenseManager.getLicenseProperties(
-				com.liferay.portal.license.LicenseManager.PRODUCT_ID_PORTAL);
-
-		int maxConcurrentUsersCount = GetterUtil.getInteger(
-			licenseProperties.get("maxConcurrentUsers"));
-
-		if (!(PropsValues.AUTH_LOGIN_DISABLED || ((maxConcurrentUsersCount > 0) && !com.liferay.portal.util.PropsValues.LIVE_USERS_ENABLED && (com.liferay.portal.liveusers.LiveUsers.getUserIdsCount() >= maxConcurrentUsersCount))) &&
+		if (!(PropsValues.AUTH_LOGIN_DISABLED ||
+			hasReachedConcurrentUserLimit()) &&
 			(remoteUser == null) && (jUserName == null)) {
 
 			for (AutoLogin autoLogin : _autoLogins) {
