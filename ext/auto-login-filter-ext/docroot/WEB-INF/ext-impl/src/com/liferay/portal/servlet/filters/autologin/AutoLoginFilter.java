@@ -102,23 +102,23 @@ public class AutoLoginFilter extends BasePortalFilter {
 			return null;
 		}
 
-		session.setAttribute("j_username", jUsername);
+		session.setAttribute(_J_USERNAME, jUsername);
 
 		// Not having access to the unencrypted password will not allow you to
 		// connect to external resources that require it (mail server)
 
 		if (encPassword) {
-			session.setAttribute("j_password", jPassword);
+			session.setAttribute(_J_PASSWORD, jPassword);
 		}
 		else {
-			session.setAttribute("j_password", PwdEncryptor.encrypt(jPassword));
+			session.setAttribute(_J_PASSWORD, PwdEncryptor.encrypt(jPassword));
 
 			if (PropsValues.SESSION_STORE_PASSWORD) {
 				session.setAttribute(WebKeys.USER_PASSWORD, jPassword);
 			}
 		}
 
-		session.setAttribute("j_remoteuser", jUsername);
+		session.setAttribute(_J_REMOTEUSER, jUsername);
 
 		if (PropsValues.PORTAL_JAAS_ENABLE) {
 			response.sendRedirect(
@@ -134,7 +134,7 @@ public class AutoLoginFilter extends BasePortalFilter {
 				LicenseManager.PRODUCT_ID_PORTAL);
 
 		int maxConcurrentUsersCount = GetterUtil.getInteger(
-			licenseProperties.get("maxConcurrentUsers"));
+			licenseProperties.get(_MAX_CONCURRENT_USERS));
 
 		return (maxConcurrentUsersCount > 0) &&
 			!PropsValues.LIVE_USERS_ENABLED &&
@@ -184,7 +184,7 @@ public class AutoLoginFilter extends BasePortalFilter {
 		}
 
 		String remoteUser = request.getRemoteUser();
-		String jUserName = (String)session.getAttribute("j_username");
+		String jUserName = (String)session.getAttribute(_J_USERNAME);
 
 		if (!(PropsValues.AUTH_LOGIN_DISABLED ||
 			hasReachedConcurrentUserLimit()) &&
@@ -254,6 +254,14 @@ public class AutoLoginFilter extends BasePortalFilter {
 
 		processFilter(AutoLoginFilter.class, request, response, filterChain);
 	}
+
+	private static final String _J_PASSWORD = "j_password";
+
+	private static final String _J_REMOTEUSER = "j_remoteuser";
+
+	private static final String _J_USERNAME = "j_username";
+
+	private static final String _MAX_CONCURRENT_USERS = "maxConcurrentUsers";
 
 	private static final String _PATH_CHAT_LATEST = "/-/chat/latest";
 
