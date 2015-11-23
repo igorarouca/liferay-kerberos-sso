@@ -130,8 +130,7 @@ public class AutoLoginFilter extends BasePortalFilter {
 
 	protected boolean hasReachedConcurrentUserLimit() {
 		Map<String, String> licenseProperties =
-			LicenseManager.getLicenseProperties(
-				LicenseManager.PRODUCT_ID_PORTAL);
+			LicenseManager.getLicenseProperties(_PRODUCT_ID_PORTAL);
 
 		int maxConcurrentUsersCount = GetterUtil.getInteger(
 			licenseProperties.get(_MAX_CONCURRENT_USERS));
@@ -288,6 +287,8 @@ public class AutoLoginFilter extends BasePortalFilter {
 	private static final String _MAX_CONCURRENT_USERS = "maxConcurrentUsers";
 
 	private static final String _PATH_CHAT_LATEST = "/-/chat/latest";
+
+	private static final String _PRODUCT_ID_PORTAL = "Portal";
 
 	private static Log _log = LogFactoryUtil.getLog(AutoLoginFilter.class);
 
