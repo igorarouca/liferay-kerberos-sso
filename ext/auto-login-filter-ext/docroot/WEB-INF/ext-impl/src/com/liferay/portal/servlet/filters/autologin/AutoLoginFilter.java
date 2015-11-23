@@ -23,12 +23,11 @@ import com.liferay.portal.kernel.util.InstancePool;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.User;
-import com.liferay.portal.model.UserTracker;
 import com.liferay.portal.security.auth.AutoLogin;
 import com.liferay.portal.security.pwd.PwdEncryptor;
 import com.liferay.portal.service.UserLocalServiceUtil;
-import com.liferay.portal.service.UserTrackerLocalServiceUtil;
 import com.liferay.portal.servlet.filters.BasePortalFilter;
+import com.liferay.portal.util.Portal;
 import com.liferay.portal.util.PortalInstances;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PropsValues;
@@ -90,18 +89,6 @@ public class AutoLoginFilter extends BasePortalFilter {
 
 				if (user.isLockout()) {
 					return null;
-				}
-				else if (PropsValues.LIVE_USERS_ENABLED) {
-					UserTracker userTracker =
-						UserTrackerLocalServiceUtil.fetchUserTracker(userId);
-
-					if ((userTracker == null) &&
-						(session.getAttribute(WebKeys.USER) == null)) {
-
-						session.invalidate();
-
-						return null;
-					}
 				}
 			}
 			else {
@@ -183,7 +170,14 @@ public class AutoLoginFilter extends BasePortalFilter {
 		String remoteUser = request.getRemoteUser();
 		String jUserName = (String)session.getAttribute("j_username");
 
-		if (!PropsValues.AUTH_LOGIN_DISABLED &&
+		java.util.Map<String, String> licenseProperties =
+			com.liferay.portal.license.LicenseManager.getLicenseProperties(
+				com.liferay.portal.license.LicenseManager.PRODUCT_ID_PORTAL);
+
+		int maxConcurrentUsersCount = GetterUtil.getInteger(
+			licenseProperties.get("maxConcurrentUsers"));
+
+		if (!(PropsValues.AUTH_LOGIN_DISABLED || ((maxConcurrentUsersCount > 0) && !com.liferay.portal.util.PropsValues.LIVE_USERS_ENABLED && (com.liferay.portal.liveusers.LiveUsers.getUserIdsCount() >= maxConcurrentUsersCount))) &&
 			(remoteUser == null) && (jUserName == null)) {
 
 			for (AutoLogin autoLogin : _autoLogins) {
@@ -210,13 +204,18 @@ public class AutoLoginFilter extends BasePortalFilter {
 							return;
 						}
 
-						redirect = (String)request.getAttribute(
-							AutoLogin.AUTO_LOGIN_REDIRECT_AND_CONTINUE);
+						if (!PropsValues.AUTH_FORWARD_BY_LAST_PATH) {
+							redirect = Portal.PATH_MAIN;
+						}
+						else {
+							redirect = (String)request.getAttribute(
+								AutoLogin.AUTO_LOGIN_REDIRECT_AND_CONTINUE);
+						}
 
 						if (Validator.isNotNull(redirect)) {
 							response.sendRedirect(redirect);
 
-							break;
+							return;
 						}
 					}
 				}
