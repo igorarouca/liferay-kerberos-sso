@@ -16,9 +16,6 @@ package com.liferay.portal.security.auth;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.PrefsPropsUtil;
-import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.Company;
@@ -90,16 +87,6 @@ public class KerberosAutoLogin implements AutoLogin {
 
 				return null;
 			}
-
-			String redirect = ParamUtil.getString(request, "redirect");
-
-			if (Validator.isNull(redirect)) {
-				redirect = PrefsPropsUtil.getString(
-					companyId, PropsKeys.DEFAULT_LANDING_PAGE_PATH,
-					KerberosPropsValues.DEFAULT_LANDING_PAGE_PATH);
-			}
-
-			request.setAttribute(AutoLogin.AUTO_LOGIN_REDIRECT, redirect);
 
 			String[] credentials = new String[3];
 
