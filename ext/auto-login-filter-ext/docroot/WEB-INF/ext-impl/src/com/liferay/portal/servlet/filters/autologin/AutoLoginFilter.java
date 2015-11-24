@@ -211,7 +211,6 @@ public class AutoLoginFilter extends BasePortalFilter {
 				if ((remoteUser != null) && !kerberosAutoLogin) {
 					continue;
 				}
-
 				/* --- Customization finishes here --- */
 
 				try {
