@@ -212,11 +212,10 @@ public class AutoLoginFilter extends BasePortalFilter {
 					continue;
 				}
 
+				/* --- Customization finishes here --- */
+
 				try {
 					String[] credentials = autoLogin.login(request, response);
-
-					String loginRemoteUser = getLoginRemoteUser(
-						request, response, session, credentials);
 
 					String redirect = (String)request.getAttribute(
 						AutoLogin.AUTO_LOGIN_REDIRECT);
@@ -227,7 +226,8 @@ public class AutoLoginFilter extends BasePortalFilter {
 						return;
 					}
 
-				/* --- Customization finishes here --- */
+					String loginRemoteUser = getLoginRemoteUser(
+						request, response, session, credentials);
 
 					if (loginRemoteUser != null) {
 						request = new ProtectedServletRequest(
