@@ -15,8 +15,12 @@
 package com.liferay.portal.security.auth.util;
 
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 public class KerberosPropsValues {
+
+	public static final String DEFAULT_LANDING_PAGE_PATH = PropsUtil.get(
+		PropsKeys.DEFAULT_LANDING_PAGE_PATH);
 
 	public static final boolean KERBEROS_AUTH_ENABLED =
 		GetterUtil.getBoolean(

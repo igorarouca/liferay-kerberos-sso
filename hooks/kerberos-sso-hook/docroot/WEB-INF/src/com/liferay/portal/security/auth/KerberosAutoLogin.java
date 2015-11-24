@@ -14,12 +14,11 @@
 
 package com.liferay.portal.security.auth;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PrefsPropsUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.Company;
@@ -28,6 +27,9 @@ import com.liferay.portal.security.auth.util.KerberosPropsValues;
 import com.liferay.portal.security.ldap.PortalLDAPImporterUtil;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.util.PortalUtil;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 public class KerberosAutoLogin implements AutoLogin {
 
 	@Override
@@ -82,8 +84,8 @@ public class KerberosAutoLogin implements AutoLogin {
 
 			if (user == null) {
 				_log.warn(
-					">>> User '" + userName + "' not found in the Liferay" + 
-						"database. Please verify why user was not imported " + 
+					">>> User '" + userName + "' not found in the Liferay" +
+						"database. Please verify why user was not imported " +
 							"from Active Directory");
 
 				return null;
@@ -92,8 +94,12 @@ public class KerberosAutoLogin implements AutoLogin {
 			String redirect = ParamUtil.getString(request, "redirect");
 
 			if (Validator.isNull(redirect)) {
-				request.setAttribute(AutoLogin.AUTO_LOGIN_REDIRECT, redirect);
+				redirect = PrefsPropsUtil.getString(
+					companyId, PropsKeys.DEFAULT_LANDING_PAGE_PATH,
+					KerberosPropsValues.DEFAULT_LANDING_PAGE_PATH);
 			}
+
+			request.setAttribute(AutoLogin.AUTO_LOGIN_REDIRECT, redirect);
 
 			String[] credentials = new String[3];
 

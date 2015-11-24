@@ -198,7 +198,7 @@ public class AutoLoginFilter extends BasePortalFilter {
 
 		String jUserName = (String)session.getAttribute(_J_USERNAME);
 
-		if ((!PropsValues.AUTH_LOGIN_DISABLED || 
+		if ((!PropsValues.AUTH_LOGIN_DISABLED ||
 			hasReachedConcurrentUserLimit()) && (jUserName == null)) {
 
 			String remoteUser = request.getRemoteUser();
@@ -211,10 +211,12 @@ public class AutoLoginFilter extends BasePortalFilter {
 				if ((remoteUser != null) && !kerberosAutoLogin) {
 					continue;
 				}
-				/* --- Customization finishes here --- */
 
 				try {
 					String[] credentials = autoLogin.login(request, response);
+
+					String loginRemoteUser = getLoginRemoteUser(
+						request, response, session, credentials);
 
 					String redirect = (String)request.getAttribute(
 						AutoLogin.AUTO_LOGIN_REDIRECT);
@@ -225,8 +227,7 @@ public class AutoLoginFilter extends BasePortalFilter {
 						return;
 					}
 
-					String loginRemoteUser = getLoginRemoteUser(
-						request, response, session, credentials);
+				/* --- Customization finishes here --- */
 
 					if (loginRemoteUser != null) {
 						request = new ProtectedServletRequest(
