@@ -128,6 +128,7 @@ public class AutoLoginFilter extends BasePortalFilter {
 		return jUsername;
 	}
 
+	@SuppressWarnings("unchecked")
 	protected boolean hasReachedConcurrentUserLimit() {
 		Map<String, String> licenseProperties =
 			LicenseManager.getLicenseProperties(_PRODUCT_ID_PORTAL);
@@ -194,20 +195,20 @@ public class AutoLoginFilter extends BasePortalFilter {
 		 * portal, but we still want to run the KerberosAutoLogin.
 		 *
 		 */
-		if (!PropsValues.AUTH_LOGIN_DISABLED || 
-			hasReachedConcurrentUserLimit()) {
+
+		String jUserName = (String)session.getAttribute(_J_USERNAME);
+
+		if ((!PropsValues.AUTH_LOGIN_DISABLED || 
+			hasReachedConcurrentUserLimit()) && (jUserName == null)) {
 
 			String remoteUser = request.getRemoteUser();
-			String jUserName = (String)session.getAttribute(_J_USERNAME);
 
 			for (AutoLogin autoLogin : _autoLogins) {
 				/* --- Customization starts here --- */
 				boolean kerberosAutoLogin =
 					autoLogin.toString().equals(_KERBEROS_AUTO_LOGIN);
 
-				if (((remoteUser != null) || (jUserName != null))
-					&& !kerberosAutoLogin) {
-
+				if ((remoteUser != null) && !kerberosAutoLogin) {
 					continue;
 				}
 				/* --- Customization finishes here --- */
