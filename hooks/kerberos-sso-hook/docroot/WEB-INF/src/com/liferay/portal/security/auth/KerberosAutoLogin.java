@@ -19,11 +19,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.Company;
 import com.liferay.portal.model.User;
-import com.liferay.portal.security.auth.util.KerberosAuthSettingsUtil;
+import com.liferay.portal.security.auth.util.KerberosPropsValues;
 import com.liferay.portal.security.ldap.PortalLDAPImporterUtil;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.util.PortalUtil;
@@ -35,7 +36,7 @@ public class KerberosAutoLogin implements AutoLogin {
 		throws AutoLoginException {
 
 		try {
-			if (!KerberosAuthSettingsUtil.isAuthEnabled()) {
+			if (!KerberosPropsValues.KERBEROS_AUTH_ENABLED) {
 				_log.debug(">>> Kerberos authentication is disabled");
 
 				return null;
@@ -57,7 +58,7 @@ public class KerberosAutoLogin implements AutoLogin {
 			long companyId = company.getCompanyId();
 			User user = null;
 
-			if (KerberosAuthSettingsUtil.isLDAPImportEnabled()) {
+			if (KerberosPropsValues.KERBEROS_IMPORT_FROM_LDAP) {
 				_log.debug(">>> User import from LDAP is enabled");
 
 				try {
@@ -80,7 +81,18 @@ public class KerberosAutoLogin implements AutoLogin {
 			}
 
 			if (user == null) {
+				_log.warn(
+					">>> User '" + userName + "' not found in the Liferay" + 
+						"database. Please verify why user was not imported " + 
+							"from Active Directory");
+
 				return null;
+			}
+
+			String redirect = ParamUtil.getString(request, "redirect");
+
+			if (Validator.isNull(redirect)) {
+				request.setAttribute(AutoLogin.AUTO_LOGIN_REDIRECT, redirect);
 			}
 
 			String[] credentials = new String[3];
